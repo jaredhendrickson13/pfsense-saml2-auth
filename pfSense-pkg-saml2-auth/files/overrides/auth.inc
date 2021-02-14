@@ -1943,11 +1943,13 @@ function session_auth() {
 
 	/* Validate incoming login request */
 	$attributes = array();
+	$_POST["saml2_login"] = boolval($_POST["saml2_login"]);
+
     # SAML2 auth added by pfSense-pkg-saml2-auth
-    if (isset($_POST['saml2_login']) or (isset($_POST['login']) && !empty($_POST['usernamefld']) && !empty($_POST['passwordfld']))) {
+    if ($_POST['saml2_login'] or (isset($_POST['login']) && !empty($_POST['usernamefld']) && !empty($_POST['passwordfld']))) {
 		$authcfg = auth_get_authserver($config['system']['webgui']['authmode']);
 		$remoteauth = authenticate_user($_POST['usernamefld'], $_POST['passwordfld'], $authcfg, $attributes);
-		$remoteauth = (isset($_POST['saml2_login']) && !empty($_POST['usernamefld'])) ? true : $remoteauth;
+		$remoteauth = ($_POST['saml2_login'] && !empty($_POST['usernamefld'])) ? true : $remoteauth;
 		# SAML2 login added by pfSense-pkg-saml2-auth
 		if ($remoteauth || authenticate_user($_POST['usernamefld'], $_POST['passwordfld'])) {
 			// Generate a new id to avoid session fixation
@@ -1955,7 +1957,7 @@ function session_auth() {
 			$_SESSION['Logged_In'] = "True";
 			$_SESSION['remoteauth'] = $remoteauth;
 			if ($_SESSION['remoteauth']) {
-			    if (isset($_POST['saml2_login'])) {
+			    if ($_POST['saml2_login']) {
                     $_SESSION['authsource'] = "SAML2";
                 }
 				elseif (empty($authcfg['type']) || ($authcfg['type'] == "Local Auth")) {

@@ -1,0 +1,8 @@
+#saml2_login_button {
+    cursor: pointer;
+}
+
+#saml2_login_button p {
+    text-align: center;
+    margin-top: 5px;
+}

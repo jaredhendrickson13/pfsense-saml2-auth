@@ -349,8 +349,10 @@ function display_login_form() {
 			                <input name="passwordfld" id="passwordfld" type="password" placeholder="Password" />
 			                <input type="submit" name="login" value="Sign In" class="btn btn-success btn-sm" />
                             <!--SSO login link added by pfSense-pkg-saml2-auth-->
-                            <input type="hidden" name="saml2_login" value="1"/>
-                            <a style="cursor: pointer" onclick="this.parentNode.submit();"><p style="text-align: center">Login with SSO</p></a>
+                            <link rel="stylesheet" href="/css/saml2_auth.css" type="text/css">
+                            <script type="application/javascript" src="/js/saml2_auth.js"></script>
+                            <input id="saml2_login_input" type="hidden" name="saml2_login"/>
+                            <a id="saml2_login_button" onclick="start_sso()"><p>Login with SSO</p></a>
 		                </form>
 					</div>
 	            </div>
