@@ -1,0 +1,11 @@
+#!/bin/sh
+if [ "${2}" != "POST-INSTALL" ]; then
+	exit 0
+fi
+/usr/local/bin/php -f /etc/rc.packages %%PORTNAME%% ${2}
+/bin/cp /etc/inc/auth.inc /etc/inc/auth.inc.original
+/bin/cp /etc/inc/authgui.inc /etc/inc/authgui.inc.original
+/bin/cp /etc/inc/priv.inc /etc/inc/priv.inc.original
+/bin/cp /etc/inc/saml2_auth/overrides/auth.inc /etc/inc/auth.inc
+/bin/cp /etc/inc/saml2_auth/overrides/authgui.inc /etc/inc/authgui.inc
+/bin/cp /etc/inc/saml2_auth/overrides/priv.inc /etc/inc/priv.inc

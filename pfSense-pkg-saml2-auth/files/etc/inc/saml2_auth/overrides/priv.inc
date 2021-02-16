@@ -266,9 +266,10 @@ function getAllowedPages($username, &$attributes = array()) {
         }
 
         # Added by pfSense-pkg-saml2-auth - set SAML2 user's group assignments as specified by the SAML2 assertion
-        # TODO: allow admins to set the group attribute name from the SAML assertion. Currently is `groups`.
         if ($_SESSION["authsource"] === "SAML2") {
-            $allowed_groups = $_SESSION["samlUserdata"]["groups"];
+            require_once("saml2_auth/SAML2Auth.inc");
+            $pkg_conf = SAML2Auth::get_package_config()[1];
+            $allowed_groups = $_SESSION["samlUserdata"][$pkg_conf["idp_groups_attribute"]];
         }
     }
     if (!$allowed_groups) {

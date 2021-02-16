@@ -2,7 +2,7 @@
 <pfsensepkgs>
     <package>
         <name>SAML2 Authentication</name>
-        <internal_name>saml2_auth</internal_name>
+        <internal_name>saml2-auth</internal_name>
         <descr><![CDATA[A SAML2 authentication extension for the pfSense UI]]></descr>
         <website>https://github.com/jaredhendrickson13/pfsense-saml2-auth</website>
         <category>System</category>
@@ -17,7 +17,7 @@
             <idp_sign_on_url></idp_sign_on_url>
             <idp_groups_attribute></idp_groups_attribute>
             <idp_x509_cert></idp_x509_cert>
-            <sp_base_url>sha256</sp_base_url>
+            <sp_base_url></sp_base_url>
         </conf>
     </package>
 </pfsensepkgs>

@@ -1,0 +1,8 @@
+#!/bin/sh
+if [ "${2}" != "POST-DEINSTALL" ]; then
+	exit 0
+fi
+/usr/local/bin/php -f /etc/rc.packages %%PORTNAME%% ${2}
+/bin/cp /etc/inc/auth.inc.original /etc/inc/auth.inc
+/bin/cp /etc/inc/authgui.inc.original /etc/inc/authgui.inc
+/bin/cp /etc/inc/priv.inc.original /etc/inc/priv.inc

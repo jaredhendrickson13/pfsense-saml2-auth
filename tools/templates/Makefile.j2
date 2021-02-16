@@ -7,7 +7,7 @@ CATEGORIES=sysutils
 MASTER_SITES=# empty
 DISTFILES=# empty
 EXTRACT_ONLY=# empty
-MAINTAINER=jaredhendrickson13@gmail.com
+MAINTAINER=	jaredhendrickson13@gmail.com
 COMMENT=pfSense SAML2 Authentication package
 LICENSE=APACHE20
 NO_BUILD=yes
@@ -16,6 +16,13 @@ SUB_FILES=pkg-install pkg-deinstall
 SUB_LIST=PORTNAME=${PORTNAME}
 
 do-extract:
-	 ${MKDIR} ${WRKSRC}
+    ${MKDIR} ${WRKSRC}
 
+do-install:
+    {% for dir in files["dir"] -%}
+    ${MKDIR} ${STAGEDIR}{{ dir }}
+    {% endfor %}
+    {% for file in files["file"] -%}
+    ${INSTALL_DATA} ${FILESDIR}{{ file }} ${STAGEDIR}{{ file | dirname }}
+    {% endfor %}
 .include <bsd.port.mk>

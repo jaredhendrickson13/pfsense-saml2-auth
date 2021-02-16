@@ -351,9 +351,17 @@ function display_login_form() {
                         <input name="passwordfld" id="passwordfld" type="password" placeholder="Password" />
                         <input type="submit" name="login" value="Sign In" class="btn btn-success btn-sm" />
 
-                        <!--Added by pfSense-pkg-saml2-auth - Show SSO login link on login page-->
-                        <link rel="stylesheet" href="/css/saml2_auth.css" type="text/css">
-                        <a id="saml2_login_button" href="/saml2_auth/sso/"><p>Login with SSO</p></a>
+                        <?php
+                        # Added by pfSense-pkg-saml2-auth - Show SSO login link on login page
+                        require_once("saml2_auth/SAML2Auth.inc");
+                        $pkg_conf = SAML2Auth::get_package_config()[1];
+
+                        # Only display the SSO login link if SAML2 auth is enabled
+                        if (boolval($pkg_conf["enable"])) {
+                            echo '<link rel="stylesheet" href="/css/saml2_auth.css" type="text/css">';
+                            echo '<a id="saml2_login_button" href="/saml2_auth/sso/"><p>Login with SSO</p></a>';
+                        }
+                        ?>
 
                     </form>
                 </div>

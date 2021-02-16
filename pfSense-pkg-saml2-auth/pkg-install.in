@@ -1,8 +1,0 @@
-#!/bin/sh
-if [ "${2}" != "POST-INSTALL" ]; then
-	exit 0
-fi
-
-# Get this scripts directory so we can initiate it correctly from any directory
-BASEDIR=$(dirname "$0")
-sh "$BASEDIR/install.sh"
