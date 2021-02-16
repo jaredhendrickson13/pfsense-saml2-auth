@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<pfsensepkgs>
+    <package>
+        <name>SAML2 Authentication</name>
+        <internal_name>saml2_auth</internal_name>
+        <descr><![CDATA[A SAML2 authentication extension for the pfSense UI]]></descr>
+        <website>https://github.com/jaredhendrickson13/pfsense-saml2-auth</website>
+        <category>System</category>
+        <version>%%PKGVERSION%%</version>
+        <configurationfile>saml2_auth.xml</configurationfile>
+        <maintainer>jaredhendrickson13@gmail.com</maintainer>
+        <conf>
+            <enable></enable>
+            <strip_username></strip_username>
+            <debug_mode></debug_mode>
+            <idp_entity_id></idp_entity_id>
+            <idp_sign_on_url></idp_sign_on_url>
+            <idp_groups_attribute></idp_groups_attribute>
+            <idp_x509_cert></idp_x509_cert>
+            <sp_base_url>sha256</sp_base_url>
+        </conf>
+    </package>
+</pfsensepkgs>

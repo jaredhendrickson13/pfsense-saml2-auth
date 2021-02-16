@@ -19,5 +19,5 @@ elseif(isset($_GET["redirect"])) {
 }
 # Start SSO
 else {
-    $saml2_auth->sso("https://172.16.209.9/saml2_auth/sso/redirect/");
+    $saml2_auth->sso("https://172.16.77.2/saml2_auth/sso/redirect/");
 }

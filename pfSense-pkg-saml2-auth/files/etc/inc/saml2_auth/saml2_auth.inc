@@ -74,9 +74,9 @@ class saml2_auth {
         return array (
             'debug' => true,
             'sp' => array (
-                'entityId' => 'https://172.16.209.9/saml2_auth/sso/metadata/',
+                'entityId' => 'https://172.16.77.2/saml2_auth/sso/metadata/',
                 'assertionConsumerService' => array (
-                    'url' => 'https://172.16.209.9/saml2_auth/sso/acs/',
+                    'url' => 'https://172.16.77.2/saml2_auth/sso/acs/',
                 ),
                 'NameIDFormat' => 'urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified',
             ),

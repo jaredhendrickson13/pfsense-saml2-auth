@@ -1,3 +1,9 @@
+#!/bin/sh
+if [ "${2}" != "POST-DEINSTALL" ]; then
+    rm -rf /usr/local/www/api/v1/*
+	exit 0
+fi
+
 # Restore the file overrides to the state they were at when the package was installed
 cp /etc/inc/auth.inc.original /etc/inc/auth.inc
 cp /etc/inc/authgui.inc.original /etc/inc/authgui.inc
