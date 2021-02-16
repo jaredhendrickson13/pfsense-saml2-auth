@@ -1,5 +1,6 @@
-function start_sso() {
-    // Set the saml_login trigger and submit the login form to begin SSO authentication
-    document.getElementById("saml2_login_input").value = "1";
-    document.getElementById("saml2_login_button").parentNode.submit();
+function sso_redirect() {
+    // Find our anchor tag and simulate a click using JavaScript
+    var redirect = document.getElementById("no-referrer-anchor");
+    redirect.href = "/";
+    redirect.click();
 }
