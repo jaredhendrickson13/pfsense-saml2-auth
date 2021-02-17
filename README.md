@@ -5,12 +5,12 @@ At this time, there is unfortunately no roadmap for native SAML2 authentication 
 This can create major headaches when dealing with security compliance standards such as PCI DSS that may require MFA on 
 firewall admin logins. `pfsense-saml2-auth` helps alleviate this problem by allowing you to integrate single sign-on 
 (SSO) with an identity provider such as Okta or OneLogin. In doing so, you will be able use the identity provider's 
-built-in MFA for pfSense logins and greatly simplify user onboarding.
-<br>
+built-in MFA for pfSense logins and greatly simplify user onboarding.<br><br>
 
 ![sso_login_example_img](docs/img/sso_login.png)
 <sub>The 'Login with SSO' option will only appear on the login screen after the package is installed and configured. SAML2
-must be enabled in System > SAML2 for this option to appear.</sub> 
+must be enabled in System > SAML2 for this option to appear.</sub><br>
+
 
 ## Key Features
 - Easily integrates SSO logins for pfSense without losing any existing authentication functionality.
