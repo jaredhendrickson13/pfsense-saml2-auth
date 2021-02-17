@@ -7,8 +7,9 @@ firewall admin logins. `pfsense-saml2-auth` helps alleviate this problem by allo
 (SSO) with an identity provider such as Okta or OneLogin. In doing so, you will be able use the identity provider's 
 built-in MFA for pfSense logins and greatly simplify user onboarding.
 <br>
-
-![sso_login_example_img](./sso_login.png)
+---
+![sso_login_example_img](docs/img/sso_login.png)
+---
 
 ## Key Features
 - Easily integrates SSO logins for pfSense without losing any existing authentication functionality.
@@ -34,6 +35,9 @@ To uninstall:<br>
 ## Setup
 After installation, navigate to System > SAML2 to configure SAML authentication. You will need to obtain a few
 items from your IdP to add on this page and you will also need to provide a few items to your IdP from this page.
+<br>
+
+![sso_settings_example_img](docs/img/sso_settings.png)
 
 _Note: users must hold the `page-all` and/or `page-system-saml2-auth` privilege to access the System > SAML2 page._
 
@@ -49,6 +53,7 @@ note you must configure your IdP to return a group attribute within the SAML ass
 the authenticating user belongs to. You can specify the name of the group mapping attribute in System > SAML2 > Identity
 Provider Groups Attribute. If your IdP does not return group attributes in the SAML assertion, this method cannot be 
 used.
+![sso_group_mapping_example_img](docs/img/sso_group_mapping.png)<br><br>
 
 2) Create a local user that matches the authenticating user's username as it appears in your
 IdP. You may use a random password for this user to prevent local authentication if needed. After the local user is 
@@ -57,6 +62,7 @@ privileges have been assigned, the user will automatically inherit the assigned 
 pfSense does not allow emails as local usernames. In the case that your IdP uses email addresses as usernames by 
 default, you may check the checkbox at System > SAML2 > Filter Email Usernames to only use the username before the @ 
 symbol.
+![sso_user_mapping_example_img](docs/img/sso_user_mapping.png)<br><br>
 
 ## Limitations
 - This package is only intended to add SAML2 authentication to the webConfigurator. This means you cannot use SAML2
