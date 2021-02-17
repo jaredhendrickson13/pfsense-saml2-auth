@@ -9,6 +9,8 @@ built-in MFA for pfSense logins and greatly simplify user onboarding.
 <br>
 
 ![sso_login_example_img](docs/img/sso_login.png)
+<sub>The 'Login with SSO' option will only appear on the login screen after the package is installed and configured. SAML2
+must be enabled in System > SAML2 for this option to appear.</sub> 
 
 ## Key Features
 - Easily integrates SSO logins for pfSense without losing any existing authentication functionality.
