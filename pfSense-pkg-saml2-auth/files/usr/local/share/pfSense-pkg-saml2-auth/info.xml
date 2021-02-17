@@ -11,7 +11,7 @@
         <maintainer>jaredhendrickson13@gmail.com</maintainer>
         <conf>
             <enable></enable>
-            <strip_username></strip_username>
+            <strip_username>yes</strip_username>
             <debug_mode></debug_mode>
             <idp_entity_id></idp_entity_id>
             <idp_sign_on_url></idp_sign_on_url>

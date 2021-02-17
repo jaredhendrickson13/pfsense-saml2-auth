@@ -6,3 +6,11 @@
     text-align: center;
     margin-top: 5px;
 }
+
+#saml2_redirect_notice {
+    font-size: 48px;
+    font-family: helvetica, sans-serif;
+    color: gray;
+    text-align: center;
+    margin-top: 200px;
+}

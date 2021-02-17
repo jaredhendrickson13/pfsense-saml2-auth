@@ -22,13 +22,13 @@ class SAML2Auth {
 
     public function acs() {
         # Process our request response
-        $this->auth->processResponse($_SESSION['AuthNRequestID']);
+        $resp = $this->auth->processResponse($_SESSION['AuthNRequestID']);
 
-        # Handle errors
+        # Handle SAML errors
         if (!empty($this->auth->getErrors())) {
-            echo '<p>',implode(', ', $this->auth->getErrors()),'</p>';
+            echo '<pre>',implode(', ', $this->auth->getErrors()),'</pre>';
             if ($this->auth->getSettings()->isDebugActive()) {
-                echo '<p>'.$this->auth->getLastErrorReason().'</p>';
+                echo '<pre>'.$this->auth->getLastErrorReason().'</pre>';
                 exit();
             }
         }

@@ -4,12 +4,27 @@ session_start();
 
 # Create the saml2 authentication object
 $saml2_auth = new SAML2Auth();
+$pkg_conf = SAML2Auth::get_package_config()[1];
 
-# Return debugging data when `debug` parameter is received
-if (isset($_GET['debug'])) {
-    var_dump($_SESSION);
-    echo PHP_EOL."-----------------".PHP_EOL;
-    var_dump($saml2_auth);
+# Functions
+function get_debug_data() {
+    echo "<p>--------- GENERAL --------</p>".PHP_EOL;
+    echo "<pre>SAML2 Name ID: ".$_SESSION['samlNameId']."</pre>".PHP_EOL;
+    echo "<p>--------- ATTRIBUTES --------</p>".PHP_EOL;
+    # Loop through and print each of our received SAML2 attributes
+    if (is_array($_SESSION["samlUserdata"])) {
+        foreach ($_SESSION["samlUserdata"] as $attr_name=>$attr_val) {
+            echo "<pre>";
+            echo $attr_name.": ";
+            print_r($attr_val);
+            echo "</pre>";
+        }
+    }
+}
+
+# Return debugging data when `debug_mode` parameter is received
+if (isset($_GET['debug_mode']) and boolval($pkg_conf["debug_mode"])) {
+    get_debug_data();
 }
 # Start SSO
 else {

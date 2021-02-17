@@ -1985,11 +1985,21 @@ function session_auth() {
             } else {
                 $_SESSION['authsource'] = 'Local Database Fallback';
             }
-            # Added by pfSense-pkg-saml2-auth - Save username found in SAML assertion of using SAML authentication
-            $_SESSION['Username'] = ($_SESSION['saml2_auth']) ? $_SESSION['samlNameId'] :$_POST['usernamefld'];
+            $_SESSION['Username'] = $_POST['usernamefld'];
             $_SESSION['user_radius_attributes'] = $attributes;
             $_SESSION['last_access'] = time();
             $_SESSION['protocol'] = $config['system']['webgui']['protocol'];
+
+            # Added by pfSense-pkg-saml2-auth - Save username found in SAML assertion of using SAML authentication
+            if ($_SESSION['saml2_auth']) {
+                require_once("saml2_auth/SAML2Auth.inc");
+                $pkg_conf = SAML2Auth::get_package_config()[1];
+                $_SESSION["Username"] = $_SESSION['samlNameId'];
+                # Strip email usernames if configured
+                if (boolval($pkg_conf["strip_username"])) {
+                    $_SESSION["Username"] = explode("@", $_SESSION["Username"])[0];
+                }
+            }
 
             # Added by pfSense-pkg-saml2-auth - Unset the saml2 authentication success variable to avoid login loop
             unset($_SESSION['saml2_auth']);
