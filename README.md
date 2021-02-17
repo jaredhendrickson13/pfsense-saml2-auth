@@ -3,9 +3,9 @@
 only supports local, LDAP and RADIUS authentication and does not support any native multi-factor authentication (MFA). 
 At this time, there is unfortunately no roadmap for native SAML2 authentication or native MFA options on pfSense.
 This can create major headaches when dealing with security compliance standards such as PCI DSS that may require MFA on 
-firewall admin logins. `pfsense-saml2-auth` helps alleviate this problem by allowing you integrate single sign-on (SSO)
-with an identity provider such as Okta or OneLogin. In doing so, you will be able use the identity provider's built-in
-MFA for pfSense logins and greatly simplify user onboarding.
+firewall admin logins. `pfsense-saml2-auth` helps alleviate this problem by allowing you to integrate single sign-on 
+(SSO) with an identity provider such as Okta or OneLogin. In doing so, you will be able use the identity provider's 
+built-in MFA for pfSense logins and greatly simplify user onboarding.
 
 ## Key Features
 - Easily integrates SSO logins for pfSense without losing any existing authentication functionality.
