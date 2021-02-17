@@ -24,12 +24,11 @@ corresponds with your version of pfSense
 To install, simply run the following command from the pfSense command line:<br>
 `pkg add https://github.com/jaredhendrickson13/pfsense-saml2-auth/releases`
 
-To update to a specific release:<br>
-`pkg add -f https://github.com/jaredhendrickson13/pfsense-saml2-auth/releases`
-
 To uninstall:<br>
 `pkg delete pfSense-pkg-saml2-auth`
 
+_Note: when pfSense updates this package will be uninstalled. After updating pfSense, the package will need to be 
+reinstalled to match the updated version_
 
 ## Setup
 After installation, navigate to System > SAML2 to configure SAML authentication. You will need to obtain a few
@@ -64,8 +63,8 @@ symbol.
 ![sso_user_mapping_example_img](docs/img/sso_user_mapping.png)<br><br>
 
 ## Limitations
-- This package is only intended to add SAML2 authentication to the webConfigurator. This means you cannot use SAML2
-for other logins such as SSH, captive portal, OpenVPN, etc.
+- This package is only intended to add SAML2 authentication to the webConfigurator. SAML2 authentication is not made
+available for other pfSense services such as SSH, captive portal, OpenVPN, etc.
 - Since this package is an extension of the native pfSense authentication system, it heavily relies on the pfSense 
 version it was built for. This means installing a version of the package that was built for 2.4.5 on different release
 may have undesired results or even break authentication for pfSense. It is important to note that uninstalling the 
@@ -76,6 +75,7 @@ package will revert any changed system files back to the state they were when th
 pfSense name is intended to relate the project to it's developed platform and in no way capitalizes on the 
 pfSense trademark. By using this software, you acknowledge that no entity can provide support or guarantee 
 functionality. 
-- This project was written and testing using Okta as the IdP. While it should support any IdP that supports SAML2 
+- This project was written and tested using Okta as the IdP. While it should support any IdP that supports SAML2 
 applications, it cannot be guaranteed to work with your specific IdP.
-- While extra precautions are taken to keep this package secure, use of this software is at your own risk
+- While extra precautions are taken to keep this package secure, you should always test thoroughly before implementing 
+in a production environment. Use this software is at your own risk!
