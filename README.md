@@ -6,8 +6,8 @@ This can create major headaches when dealing with security compliance standards 
 firewall admin logins. `pfsense-saml2-auth` helps alleviate this problem by allowing you to integrate single sign-on 
 (SSO) with an identity provider such as Okta or OneLogin. In doing so, you will be able use the identity provider's 
 built-in MFA for pfSense logins and greatly simplify user onboarding.
+<br>
 
-<br><br>
 ![sso_login_example_img](./sso_login.png)
 
 ## Key Features
