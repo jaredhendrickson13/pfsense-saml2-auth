@@ -11,7 +11,14 @@ class SAML2Auth {
         session_start();
         global $config;
         $this->config = $config;
-        $this->auth = new OneLogin\Saml2\Auth($this->__get_saml_settings());
+
+        # Try to start SAML2 authentication, handle errors accordingly
+        try {
+            $this->auth = new OneLogin\Saml2\Auth($this->__get_saml_settings());
+        } catch (OneLogin\Saml2\Error $error) {
+            echo $error->getMessage().PHP_EOL;
+            exit();
+        }
     }
 
     # Initiates the SSO login. Requires a URL to redirect to
@@ -22,7 +29,7 @@ class SAML2Auth {
 
     public function acs() {
         # Process our request response
-        $resp = $this->auth->processResponse($_SESSION['AuthNRequestID']);
+        $this->auth->processResponse($_SESSION['AuthNRequestID']);
 
         # Handle SAML errors
         if (!empty($this->auth->getErrors())) {
