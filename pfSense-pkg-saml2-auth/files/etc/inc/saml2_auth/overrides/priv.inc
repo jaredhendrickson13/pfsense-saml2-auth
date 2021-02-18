@@ -269,7 +269,7 @@ function getAllowedPages($username, &$attributes = array()) {
         if ($_SESSION["authsource"] === "SAML2") {
             require_once("saml2_auth/SAML2Auth.inc");
             $pkg_conf = SAML2Auth::get_package_config()[1];
-            $allowed_groups = $_SESSION["samlUserdata"][$pkg_conf["idp_groups_attribute"]];
+            $allowed_groups = $_SESSION["saml2_user_data"][$pkg_conf["idp_groups_attribute"]];
         }
     }
     if (!$allowed_groups) {

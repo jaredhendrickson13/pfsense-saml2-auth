@@ -1994,7 +1994,7 @@ function session_auth() {
             if ($_SESSION['saml2_auth']) {
                 require_once("saml2_auth/SAML2Auth.inc");
                 $pkg_conf = SAML2Auth::get_package_config()[1];
-                $_SESSION["Username"] = $_SESSION['samlNameId'];
+                $_SESSION["Username"] = $_SESSION['saml2_name_id'];
                 # Strip email usernames if configured
                 if (boolval($pkg_conf["strip_username"])) {
                     $_SESSION["Username"] = explode("@", $_SESSION["Username"])[0];

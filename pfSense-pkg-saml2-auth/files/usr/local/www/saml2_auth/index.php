@@ -11,6 +11,8 @@ $form = new Form(false);
 $general_section = new Form_Section('General');
 $idp_section = new Form_Section('Identity Provider Settings (IdP)');
 $sp_section = new Form_Section('Service Provider Settings (SP)');
+$advanced_section = new Form_Section('Advanced Settings');
+
 $pkg_id = SAML2Auth::get_package_config()[0];
 $pkg_conf = SAML2Auth::get_package_config()[1];
 
@@ -68,6 +70,11 @@ if ($_POST["save"]) {
     # Validate the sp_base_url value
     if (isset($_POST["sp_base_url"])) {
         $pkg_conf["sp_base_url"] = $_POST["sp_base_url"];
+    }
+
+    # Validate the custom_conf value
+    if (isset($_POST["custom_conf"])) {
+        $pkg_conf["custom_conf"] = base64_encode($_POST["custom_conf"]);
     }
 
     # Write the configuration changes
@@ -175,10 +182,22 @@ $sp_section->addInput(new Form_StaticText(
     to this URL as the assertion consumer service (ACS)."
 );
 
+# POPULATE THE ADVANCED SECTION OF THE UI
+$advanced_section->addInput(new Form_Textarea(
+    'custom_conf',
+    'Custom SAML2 configuration',
+    base64_decode($pkg_conf["custom_conf"])
+))->setHelp(
+    'Adds custom configuration for SAML2 logins. This allows you to add custom settings in JSON format for the
+    <a href="https://github.com/onelogin/php-saml" target="_blank">OneLogin PHP-SAML</a> library to use. This option is
+    unsupported. Use at your own risk.'
+);
+
 # POPULATE OUR COMPLETE FORM
 $form->add($general_section);
 $form->add($idp_section);
 $form->add($sp_section);
+$form->add($advanced_section);
 $form->addGlobal(new Form_Button('save', 'Save', null, 'fa-save'))->addClass('btn-primary');
 
 # PRINT OUR FORM AND PFSENSE FOOTER
