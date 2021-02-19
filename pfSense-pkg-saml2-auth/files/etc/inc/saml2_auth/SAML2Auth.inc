@@ -90,6 +90,7 @@ class SAML2Auth {
     public function get_saml2_errors() {
         # Print SAML errors if they exist
         if (!empty($this->auth->getErrors())) {
+            session_destroy();
             echo '<pre>',implode(', ', $this->auth->getErrors()),'</pre>';
             if ($this->auth->getSettings()->isDebugActive()) {
                 echo '<pre>'.$this->auth->getLastErrorReason().'</pre>';

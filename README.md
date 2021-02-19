@@ -1,11 +1,13 @@
 # pfSense SAML2 Authentication
 `pfsense-saml2-auth` is a packaged SAML2 authentication extension for the pfSense webConfigurator. Currently, pfSense 
 only supports local, LDAP and RADIUS authentication and does not support any native multi-factor authentication (MFA). 
-At this time, there is unfortunately no roadmap for native SAML2 authentication or native MFA options on pfSense.
-This can create major headaches when dealing with security compliance standards such as PCI DSS that may require MFA on 
-firewall admin logins. `pfsense-saml2-auth` helps alleviate this problem by allowing you to integrate single sign-on 
-(SSO) with an identity provider such as Okta or OneLogin. In doing so, you will be able use the identity provider's 
-built-in MFA for pfSense logins and greatly simplify user onboarding.<br><br>
+At this time, there is unfortunately no roadmap for native SAML2 authentication or native MFA options on pfSense. With 
+[pfSense Plus](https://www.netgate.com/blog/pfsense-plus-21-02-release-and-pfsense-ce-2-5-0-release-now-available.html)
+being officially announced, it is unlikely we will see enterprise level features like SAML2 implemented in pfSense CE
+anytime soon. This can create major headaches when dealing with security compliance standards such as PCI DSS that may 
+require MFA on firewall admin logins. `pfsense-saml2-auth` helps alleviate this problem by allowing you to integrate 
+single sign-on (SSO) with an identity provider such as Okta or OneLogin. In doing so, you will be able use the identity 
+provider's built-in MFA for pfSense logins and greatly simplify user onboarding.<br><br>
 
 ![sso_login_example_img](docs/img/sso_login.png)
 <sub>The 'Login with SSO' option will only appear on the login screen after the package is installed and configured. SAML2
@@ -20,17 +22,23 @@ No need to create locate users before authenticating.
 - Adds the System > SAML2 settings page within the webConfigurator to make setup a breeze. 
 
 ## Installation 
-From the [releases page](https://github.com/jaredhendrickson13/pfsense-saml2-auth/releases) pick the version that 
-corresponds with your version of pfSense
-
 To install, simply run the following command from the pfSense command line:<br>
-`pkg add https://github.com/jaredhendrickson13/pfsense-saml2-auth/releases`
+`pkg add https://github.com/jaredhendrickson13/pfsense-saml2-auth/releases/latest/download/pfSense-pkg-saml2-auth.txz`
 
 To uninstall:<br>
 `pkg delete pfSense-pkg-saml2-auth`
 
 _Note: when pfSense updates this package will be uninstalled. After updating pfSense, the package will need to be 
 reinstalled to match the updated version_
+_Note: for pfSense 2.4.x, you must use the package built for 
+
+## Supported Versions
+Currently, the package fully supports the following pfSense versions including patched versions of the same release:
+- pfSense 2.5.0-RELEASE
+- pfSense 2.4.5-RELEASE
+- pfSense 2.4.4-RELEASE
+
+Any version not listed is technically unsupported, but may still function. Proceed with caution.
 
 ## Setup
 After installation, navigate to System > SAML2 to configure SAML authentication. You will need to obtain a few
@@ -67,10 +75,6 @@ symbol.
 ## Limitations
 - This package is only intended to add SAML2 authentication to the webConfigurator. SAML2 authentication is not made
 available for other pfSense services such as SSH, captive portal, OpenVPN, etc.
-- Since this package is an extension of the native pfSense authentication system, it heavily relies on the pfSense 
-version it was built for. This means installing a version of the package that was built for 2.4.5 on different release
-may have undesired results or even break authentication for pfSense. It is important to note that uninstalling the 
-package will revert any changed system files back to the state they were when the package was installed.
 
 ## Disclaimers
 - This project is in no way affiliated with the pfSense project or it's parent organization Netgate. Any use of the 
@@ -81,3 +85,7 @@ functionality.
 applications, it cannot be guaranteed to work with your specific IdP.
 - While extra precautions are taken to keep this package secure, you should always test thoroughly before implementing 
 in a production environment. Use this software is at your own risk!
+- This package was designed to be a simple, secure, and stable SAML2 implementation for pfSense. Because of this, 
+additional features are unlikely to be added unless there are changes to the SAML standard itself. The package will 
+continue to receive updates to address security issues and general bugs, as well as changes to accommodate future
+versions of pfSense.

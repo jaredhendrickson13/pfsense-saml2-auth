@@ -2,10 +2,32 @@
 if [ "${2}" != "POST-INSTALL" ]; then
 	exit 0
 fi
+
+# Make this package known to pfSense
 /usr/local/bin/php -f /etc/rc.packages %%PORTNAME%% ${2}
+
+# Backup original files before overriding
 /bin/cp /etc/inc/auth.inc /etc/inc/auth.inc.original
 /bin/cp /etc/inc/authgui.inc /etc/inc/authgui.inc.original
 /bin/cp /etc/inc/priv.inc /etc/inc/priv.inc.original
-/bin/cp /etc/inc/saml2_auth/overrides/auth.inc /etc/inc/auth.inc
-/bin/cp /etc/inc/saml2_auth/overrides/authgui.inc /etc/inc/authgui.inc
-/bin/cp /etc/inc/saml2_auth/overrides/priv.inc /etc/inc/priv.inc
+echo "Creating backups of files to override...done."
+
+# Check the local systems version of pfSense before assigning file overrides
+PFSENSE_VERSION=$(/bin/cat /etc/version)
+echo "Checking pfSense version...done."
+
+# Use the corresponding pfSense version's file overrides if they exist. Otherwise print warning and use default.
+if [ -d "/etc/inc/saml2_auth/overrides/${PFSENSE_VERSION}" ]
+then
+    /bin/cp "/etc/inc/saml2_auth/overrides/${PFSENSE_VERSION}/auth.inc" "/etc/inc/auth.inc"
+    /bin/cp "/etc/inc/saml2_auth/overrides/${PFSENSE_VERSION}/authgui.inc" "/etc/inc/authgui.inc"
+    /bin/cp "/etc/inc/saml2_auth/overrides/${PFSENSE_VERSION}/priv.inc" "/etc/inc/priv.inc"
+    echo "Installing file overrides for ${PFSENSE_VERSION}...done."
+else
+    echo "WARNING: No overrides exist for ${PFSENSE_VERSION}, it may be unsupported. Using default overrides."
+    /bin/cp "/etc/inc/saml2_auth/overrides/default/auth.inc" "/etc/inc/auth.inc"
+    /bin/cp "/etc/inc/saml2_auth/overrides/default/authgui.inc" "/etc/inc/authgui.inc"
+    /bin/cp "/etc/inc/saml2_auth/overrides/default/priv.inc" "/etc/inc/priv.inc"
+    echo "Installing default file overrides...done."
+fi
+

@@ -1,3 +1,4 @@
+/* LOGIN PAGE STYLING */
 #saml2_login_button {
     cursor: pointer;
 }
@@ -7,10 +8,43 @@
     margin-top: 5px;
 }
 
+/* REDIRECT PAGE STYLING */
 #saml2_redirect_notice {
-    font-size: 48px;
+    font-size: 40px;
     font-family: helvetica, sans-serif;
     color: gray;
     text-align: center;
     margin-top: 200px;
+}
+
+#saml2_redirect_loader_container {
+    display: block;
+    margin: 0 auto;
+    width: 80px;
+    height: 80px;
+}
+
+.saml2_redirect_loader {
+    display: inline-block;
+    width: 80px;
+    height: 80px;
+}
+.saml2_redirect_loader:after {
+    content: " ";
+    display: block;
+    width: 64px;
+    height: 64px;
+    margin: 8px;
+    border-radius: 50%;
+    border: 6px solid gray;
+    border-color: gray transparent gray transparent;
+    animation: saml2_redirect_loader_animation 1.2s linear infinite;
+}
+@keyframes saml2_redirect_loader_animation {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
 }
