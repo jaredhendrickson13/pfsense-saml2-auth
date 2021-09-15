@@ -23,16 +23,17 @@ No need to create locate users before authenticating.
 
 ## Installation 
 To install, simply run the following command from the pfSense command line:<br>
-`pkg add https://github.com/jaredhendrickson13/pfsense-saml2-auth/releases/latest/download/pfSense-2.5-pkg-saml2-auth.txz`
+```pkg add https://github.com/jaredhendrickson13/pfsense-saml2-auth/releases/latest/download/pfSense-2.5-pkg-saml2-auth.txz```
 
 To uninstall:<br>
-`pkg delete pfSense-pkg-saml2-auth`
+```pkg delete pfSense-pkg-saml2-auth```
 
 _Note: when pfSense updates this package will be uninstalled. After updating pfSense, the package will need to be 
 reinstalled to match the updated version_
 
 ## Supported Versions
 Currently, the package fully supports the following pfSense versions including patched versions of the same release:
+- pfSense 2.5.2-RELEASE
 - pfSense 2.5.1-RELEASE
 - pfSense 2.5.0-RELEASE
 - pfSense 2.4.5-RELEASE
