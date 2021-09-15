@@ -31,3 +31,7 @@ else
     echo "Installing default file overrides...done."
 fi
 
+# Link the pfSense SAML2 CLI tool and make the manage script executable
+ln -s /usr/local/share/pfSense-pkg-saml2-auth/manage.php /usr/local/bin/pfsense-saml2
+chmod +x /usr/local/share/pfSense-pkg-saml2-auth/manage.php
+echo "Configuring pfsense-saml2 CLI tool...done."
