@@ -32,7 +32,7 @@ To uninstall:<br>
 pkg delete pfSense-pkg-saml2-auth
 ```
 
-_Note: when pfSense updates this package will be uninstalled. After updating pfSense, the package will need to be 
+_Note: when pfSense updates, this package will be uninstalled. After updating pfSense, the package will need to be 
 reinstalled to match the updated version_
 
 ## Supported Versions
