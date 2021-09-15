@@ -17,16 +17,20 @@ must be enabled in System > SAML2 for this option to appear.</sub><br>
 ## Key Features
 - Easily integrates SSO logins for pfSense without losing any existing authentication functionality.
 - Automatically maps groups returned within the SAML2 assertion to groups within pfSense to inherit existing privileges.
-No need to create locate users before authenticating.
+No need to create local users before authenticating.
 - Retains pfSense's built-in authentication and change logs.
 - Adds the System > SAML2 settings page within the webConfigurator to make setup a breeze. 
 
 ## Installation 
 To install, simply run the following command from the pfSense command line:<br>
-```pkg add https://github.com/jaredhendrickson13/pfsense-saml2-auth/releases/latest/download/pfSense-2.5-pkg-saml2-auth.txz```
+```
+pkg add https://github.com/jaredhendrickson13/pfsense-saml2-auth/releases/latest/download/pfSense-2.5-pkg-saml2-auth.txz
+```
 
 To uninstall:<br>
-```pkg delete pfSense-pkg-saml2-auth```
+```
+pkg delete pfSense-pkg-saml2-auth
+```
 
 _Note: when pfSense updates this package will be uninstalled. After updating pfSense, the package will need to be 
 reinstalled to match the updated version_
