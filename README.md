@@ -37,11 +37,17 @@ reinstalled to match the updated version_
 
 ## Supported Versions
 Currently, the package fully supports the following pfSense versions including patched versions of the same release:
+
+<details>
+    <summary>Supported pfSense Releases</summary>
+
 - pfSense 2.5.2-RELEASE
 - pfSense 2.5.1-RELEASE
 - pfSense 2.5.0-RELEASE
 - pfSense 2.4.5-RELEASE
 - pfSense 2.4.4-RELEASE
+
+</details>
 
 Any version not listed is technically unsupported, but may still function. Proceed with caution.
 
