@@ -94,6 +94,7 @@ if ($_POST["save"]) {
     # Write the configuration changes
     $config["installedpackages"]["package"][$pkg_id]["conf"] = $pkg_conf;
     write_config(sprintf(gettext(" Modified SAML2 settings")));
+    shell_exec("pfsense-saml2 backup");
     print_apply_result_box(0);
 }
 
@@ -107,6 +108,7 @@ if (empty($pkg_conf["sp_base_url"])) {
     # Write the configuration changes
     $config["installedpackages"]["package"][$pkg_id]["conf"] = $pkg_conf;
     write_config(sprintf(gettext(" Reverted SAML2 base URL")));
+    shell_exec("pfsense-saml2 backup");
 }
 
 # POPULATE THE GENERAL SECTION OF THE UI
