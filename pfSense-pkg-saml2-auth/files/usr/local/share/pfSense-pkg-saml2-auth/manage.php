@@ -70,7 +70,7 @@ function version() {
 # Displays the help page for the SAML2 management tool
 function help() {
     echo "pfsense-saml2 - CLI tool for pfSense-pkg-saml2-auth package management".PHP_EOL;
-    echo "Copyright - ".date("Y")."&copy - Jared Hendrickson".PHP_EOL;
+    echo "Copyright - ".date("Y")."© - Jared Hendrickson".PHP_EOL;
     echo "SYNTAX:".PHP_EOL;
     echo "  pfsense-saml2 <command> <args>".PHP_EOL;
     echo "COMMANDS:".PHP_EOL;
