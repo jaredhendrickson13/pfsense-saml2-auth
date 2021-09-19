@@ -13,8 +13,12 @@ function backup($path="/usr/local/share/pfSense-pkg-saml2-auth/backup.json") {
     # Local variables
     $config_data = SAML2Auth::get_package_config()[1];
 
+    # Print status message
+    echo "Backing up configuration...";
+
     # Save a JSON file containing the data
     file_put_contents($path, json_encode($config_data));
+    echo "done." . PHP_EOL;
 }
 
 # Restores the pfSense SAML2 configuration from a specified backup file
@@ -25,9 +29,18 @@ function restore($path="/usr/local/share/pfSense-pkg-saml2-auth/backup.json") {
     $config_json = file_get_contents($path);
     $config_data = json_decode($config_json, true);
 
-    # Save the backup configuration to the pfSense master configuration
-    $config["installedpackages"]["package"][$config_id]["conf"] = $config_data;
-    write_config("Restoring SAML2 configuration");
+    # Print status message
+    echo "Restoring configuration...";
+
+    # Save the backup configuration to the pfSense master configuration if found
+    if (file_exists($path)) {
+        $config["installedpackages"]["package"][$config_id]["conf"] = $config_data;
+        write_config("Restoring SAML2 configuration");
+        echo "done." . PHP_EOL;
+    }
+    else {
+        echo "no backup found.".PHP_EOL;
+    }
 }
 
 # Update to the latest version of the package
@@ -72,15 +85,11 @@ function runtime()
 {
     # Run backup command if requested
     if ($_SERVER["argv"][1] === "backup") {
-        echo "Backing up configuration...";
         backup();
-        echo "done." . PHP_EOL;
     }
     # Run the restore command if requested
     elseif ($_SERVER["argv"][1] === "restore") {
-        echo "Restoring configuration...";
         restore();
-        echo "done." . PHP_EOL;
     }
     # Run the update command if requested
     elseif ($_SERVER["argv"][1] === "update") {

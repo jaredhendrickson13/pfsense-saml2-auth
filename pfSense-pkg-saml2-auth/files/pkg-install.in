@@ -35,3 +35,6 @@ fi
 ln -s /usr/local/share/pfSense-pkg-saml2-auth/manage.php /usr/local/bin/pfsense-saml2
 chmod +x /usr/local/share/pfSense-pkg-saml2-auth/manage.php
 echo "Configuring pfsense-saml2 CLI tool...done."
+
+# Restore previous SAML2 configuration
+/usr/local/bin/php -f /usr/local/share/pfSense-pkg-saml2-auth/manage.php restore
