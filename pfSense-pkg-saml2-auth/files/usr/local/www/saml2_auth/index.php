@@ -79,7 +79,7 @@ if ($_POST["save"]) {
 
     # Validate the idp_x509_cert value
     if (isset($_POST["idp_x509_cert"])) {
-        $pkg_conf["idp_x509_cert"] = base64_encode($_POST["idp_x509_cert"]);
+            $pkg_conf["idp_x509_cert"] = base64_encode($_POST["idp_x509_cert"]);
     }
 
     # Validate the sp_base_url value
