@@ -89,8 +89,8 @@ if ($_POST["save"]) {
 
     # Validate the custom_conf value
     if (isset($_POST["custom_conf"])) {
-        # Ensure custom configuration is valid JSON
-        if (!is_null(json_decode($_POST["custom_conf"], true))) {
+        # Ensure custom configuration is valid JSON or empty string
+        if ($_POST["custom_conf"] === "" or !is_null(json_decode($_POST["custom_conf"], true))) {
             $pkg_conf["custom_conf"] = base64_encode($_POST["custom_conf"]);
         }
         else {
