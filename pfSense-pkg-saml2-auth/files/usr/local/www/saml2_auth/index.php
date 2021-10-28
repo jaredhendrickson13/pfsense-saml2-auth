@@ -139,7 +139,7 @@ $general_section->addInput(new Form_Checkbox(
     '',
     $pkg_conf["strip_username"]
 ))->setHelp(
-    "Enable removal any characters after the @ character on email usernames. This is required if you intend to use SAML
+    "Enable removal of any characters after the @ character on email usernames. This is required if you intend to use SAML
     authentication that maps to an existing local user and your IdP returns email addresses as the username by default."
 );
 
@@ -218,7 +218,7 @@ $advanced_section->addInput(new Form_Textarea(
     'Custom SAML2 configuration',
     base64_decode($pkg_conf["custom_conf"])
 ))->setHelp(
-    'Adds custom configuration for SAML2 logins. This allows you to add custom settings in JSON format for the
+    'Adds custom configuration for SAML2 logins. This allows you to add custom php-saml settings in JSON format for the
     <a href="https://github.com/onelogin/php-saml" target="_blank">OneLogin PHP-SAML</a> library to use. This option is
     unsupported. Use at your own risk.'
 );
