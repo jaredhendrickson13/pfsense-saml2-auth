@@ -29,6 +29,7 @@ $advanced_section = new Form_Section('Advanced Settings');
 
 $pkg_id = SAML2Auth::get_package_config()[0];
 $pkg_conf = SAML2Auth::get_package_config()[1];
+$input_errors = [];
 
 if ($_POST["save"]) {
     # Validate the enable value
@@ -88,14 +89,27 @@ if ($_POST["save"]) {
 
     # Validate the custom_conf value
     if (isset($_POST["custom_conf"])) {
-        $pkg_conf["custom_conf"] = base64_encode($_POST["custom_conf"]);
+        # Ensure custom configuration is valid JSON
+        if (!is_null(json_decode($_POST["custom_conf"], true))) {
+            $pkg_conf["custom_conf"] = base64_encode($_POST["custom_conf"]);
+        }
+        else {
+            $input_errors[] = "Custom configuration must be valid JSON string.";
+        }
     }
 
-    # Write the configuration changes
-    $config["installedpackages"]["package"][$pkg_id]["conf"] = $pkg_conf;
-    write_config(sprintf(gettext(" Modified SAML2 settings")));
-    shell_exec("pfsense-saml2 backup");
-    print_apply_result_box(0);
+    # Only write configuration changes if there were no validation errors
+    if (empty($input_errors)) {
+        # Write the configuration changes
+        $config["installedpackages"]["package"][$pkg_id]["conf"] = $pkg_conf;
+        write_config(sprintf(gettext(" Modified SAML2 settings")));
+        shell_exec("pfsense-saml2 backup");
+        print_apply_result_box(0);
+    }
+    else {
+        print_input_errors($input_errors);
+    }
+
 }
 
 # When the SP base URL is blank, default the values to the webConfigurators URL
