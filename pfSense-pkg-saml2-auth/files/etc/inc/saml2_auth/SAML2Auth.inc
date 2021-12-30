@@ -18,20 +18,25 @@ require_once("config.inc");
 
 class SAML2Auth {
     public $auth;
+    public $file_path;
     private $config;
 
     # Constructs the saml2_auth object by loading SAML2 settings and creating the OneLogin_Saml2_Auth object
-    public function __construct() {
+    public function __construct($no_auth=false) {
         session_start();
         global $config;
         $this->config = $config;
+        $this->file_path = "/usr/local/share/pfSense-pkg-saml2-auth";
 
-        # Try to start SAML2 authentication, handle errors accordingly
-        try {
-            $this->auth = new OneLogin\Saml2\Auth($this::get_saml_settings());
-        } catch (OneLogin\Saml2\Error $error) {
-            echo $error->getMessage().PHP_EOL;
-            exit();
+        # Only try to start authentication if the object wasn't requested without authentication
+        if (!$no_auth) {
+            # Try to start SAML2 authentication, handle errors accordingly
+            try {
+                $this->auth = new OneLogin\Saml2\Auth($this::get_saml_settings());
+            } catch (OneLogin\Saml2\Error $error) {
+                echo $error->getMessage().PHP_EOL;
+                exit();
+            }
         }
     }
 
@@ -101,6 +106,14 @@ class SAML2Auth {
         }
     }
 
+    # Writes log data
+    private function __log($msg, $console=false) {
+        # Print our log message to the console if requested
+        if ($console) {
+            echo $msg;
+        }
+    }
+
     public function get_saml2_errors() {
         # Print SAML errors if they exist
         if (!empty($this->auth->getErrors())) {
@@ -157,6 +170,164 @@ class SAML2Auth {
             }
         }
         return $php_saml_config;
+    }
+
+    # Fetches the current version of pfSense
+    public static function get_pfsense_version($full=false) {
+        # Only display the full release name if requested, Otherwise only provide the major and minor.
+        return ($full) ? file_get_contents("/etc/version") : substr(file_get_contents("/etc/version"), 0, 3);
+    }
+
+    public static function get_pkg_version() {
+        # Pull the raw pkg info for the SAML2 auth package into an array for each line
+        $pkg_info = explode(PHP_EOL, shell_exec("pkg info pfSense-pkg-saml2-auth"));
+
+        # Loop through each line and check the version
+        foreach ($pkg_info as $pkg_line) {
+            if (substr($pkg_line, 0, 7 ) === "Version") {
+                # Locate the version and format it to a standard semantic version format (x.x.x)
+                $version = str_replace(" ", "", $pkg_line);
+                $version = explode(":", $version)[1];
+                $version = (strlen($version) === 3) ? $version.".0" : $version;
+                $version = str_replace("_", ".", $version);
+                return $version;
+            }
+        }
+    }
+
+    public static function get_latest_pkg_version() {
+        # Fetch our latest version and format it semantically (x.x.x)
+        $latest_version = array_key_first(self::get_all_pkg_versions());
+        $latest_version = str_replace("v", "", $latest_version);
+        return $latest_version;
+    }
+
+    public static function get_latest_pkg_release_date() {
+        # Loop through each release and locate the latest available releases creation date
+        foreach (self::get_pkg_releases()["releases"] as $release) {
+            # Check if this releases is latest available for our platform
+            if ($release["tag_name"] === "v".self::get_latest_pkg_version()) {
+                return $release["created_at"];
+            }
+        }
+    }
+
+    public static function is_update_available() {
+        # Check if the current version is less than the latest version
+        $curr_ver_num = intval(str_replace(".", "", self::get_pkg_version()));
+        $latest_ver_num = intval(str_replace(".", "", self::get_latest_pkg_version()));
+        return $curr_ver_num < $latest_ver_num;
+    }
+
+    public static function get_pkg_releases() {
+        # Variables
+        $releases_file = "/usr/local/share/pfSense-pkg-saml2-auth/releases.json";
+        $releases = json_decode(file_get_contents($releases_file), true);
+        $fetch_releases_cmd = "curl -s https://api.github.com/repos/jaredhendrickson13/pfsense-saml2-auth/releases -m 10";
+
+        # Check if our previous releases data is older than 120 seconds
+        if ($releases["last_updated"] + 120 < time()) {
+            # Pull the releases data from Github and rewrite the releases file
+            $api_resp = shell_exec($fetch_releases_cmd);
+            $api_resp = json_decode($api_resp, true);
+            $releases = ["last_updated" => time(), "releases" => $api_resp];
+            file_put_contents($releases_file, json_encode($releases));
+        }
+        return $releases;
+    }
+
+    public static function get_all_pkg_versions() {
+        # Variables
+        $pf_version = substr(self::get_pfsense_version(), 0, 3);
+        $versions = [];
+        $count = 0;
+        $releases = self::get_pkg_releases()["releases"];
+
+        # Loop through each version and populate our version data
+        foreach ($releases as $release) {
+            # Loop through the assets of each release and check if our version of pfSense is supported
+            foreach ($release["assets"] as $asset) {
+                if ($asset["name"] === "pfSense-".$pf_version."-pkg-saml2-auth.txz") {
+                    # The first item of our list is the latest release, mark it as such.
+                    if ($count === 0) {
+                        $versions[$release["tag_name"]] = $release["name"]." - Latest";
+                        $count++;
+                    } else {
+                        $versions[$release["tag_name"]] = $release["name"];
+                    }
+                }
+            }
+        }
+        return $versions;
+    }
+
+    # Pulls our current pfSense SAML2 configuration and saves to a non-volatile location.
+    public function backup_config($console=false) {
+        # Local variables
+        $path = $this->file_path."/backup.json";
+        $config_data = $this->get_package_config()[1];
+
+        # Print status message
+        $this->__log("Backing up configuration...", $console);
+
+        # Save a JSON file containing the data
+        file_put_contents($path, json_encode($config_data));
+        $this->__log("done." . PHP_EOL, $console);
+        return true;
+    }
+
+    # Restores the pfSense SAML2 configuration from a specified backup file
+    public function restore_config($console=false) {
+        # Local variables
+        global $config;
+        $path = $this->file_path."/backup.json";
+        $config_id = $this->get_package_config()[0];
+        $config_json = file_get_contents($path);
+        $config_data = json_decode($config_json, true);
+
+        # Print status message
+        $this->__log("Restoring configuration...", $console);
+
+        # Save the backup configuration to the pfSense master configuration if found
+        if (file_exists($path)) {
+            $config["installedpackages"]["package"][$config_id]["conf"] = $config_data;
+            write_config("Restoring SAML2 configuration");
+            $this->__log("done." . PHP_EOL, $console);
+            return true;
+        }
+        else {
+            $this->__log("no backup found.".PHP_EOL, $console);
+            return false;
+        }
+    }
+
+    # Update to the latest version of the package
+    public function update_pkg($version="latest", $console=false) {
+        # Local variables
+        $base_url = "https://github.com/jaredhendrickson13/pfsense-saml2-auth/releases";
+
+        # Format the package URL based on the requested version
+        if ($version === "latest") {
+            $url = $base_url."/latest/download/pfSense-".$this->get_pfsense_version()."-pkg-saml2-auth.txz";
+        } else {
+            $url = $base_url."/download/".$version."/pfSense-".$this->get_pfsense_version()."-pkg-saml2-auth.txz";
+        }
+
+        # Backup the package configuration before updating
+        $this->backup_config();
+
+        # Remove the existing package and add the new one, then og the results
+        exec("pkg delete -y pfSense-pkg-saml2-auth", $del_cmd_out, $del_cmd_rc);
+        exec("pkg add ".$url, $add_cmd_out, $add_cmd_rc);
+        $this->__log(implode("\n", $del_cmd_out), $console);
+        $this->__log(implode("\n", $add_cmd_out), $console);
+
+        # Check if the update was successful
+        if ($del_cmd_rc === 0 and $add_cmd_rc === 0) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
 
