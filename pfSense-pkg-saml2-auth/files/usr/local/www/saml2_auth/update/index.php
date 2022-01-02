@@ -49,7 +49,7 @@ $update_status_section->addInput(new Form_StaticText(
     'Support Status',
     (SAML2Auth::is_pkg_supported()) ? "<span style='color: green'>Verified</span>" : "<span style='color: red'>Unverified</span>"
 ))->setHelp(
-    "Displays whether or not the package version currently installed fully supports ".$pf_ver."."
+    "Displays whether or not the package version currently installed fully supports pfSense ".$pf_ver."."
 );
 $update_status_section->addInput(new Form_StaticText('Current Version', $curr_ver.$curr_ver_msg));
 $update_status_section->addInput(new Form_StaticText(
