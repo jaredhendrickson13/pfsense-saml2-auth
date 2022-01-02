@@ -16,12 +16,11 @@
 # Imports and inits
 require_once("guiconfig.inc");
 require_once("saml2_auth/SAML2Auth.inc");
-require_once("saml2_auth/SAML2AuthTools.inc");
 
 # Initialize the pfSense UI page (note: $pgtitle must be defined before including head.inc)
 $pgtitle = array(gettext("System"), gettext("SAML2"), gettext("Settings"));
 include('head.inc');
-$update_tab = (is_update_available()) ? "Update (New Release Available)" : "Update";
+$update_tab = (SAML2Auth::is_update_available()) ? "Update (New Release Available)" : "Update";
 $tab_array = [[gettext("Settings"), true, "/saml2_auth/"], [gettext("$update_tab"), false, "/saml2_auth/update/"]];
 display_top_tabs($tab_array, true);    # Ensures the tabs are written to the top of page
 global $config;
