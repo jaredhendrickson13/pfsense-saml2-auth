@@ -59,7 +59,7 @@ function runtime() {
                 exit(1);
             }
         }
-        $this->update_pkg($version, true);
+        $saml2->update_pkg($version, true);
     }
     # Run the version command if requested
     elseif ($_SERVER["argv"][1] === "version") {
