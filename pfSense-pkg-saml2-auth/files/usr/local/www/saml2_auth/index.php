@@ -1,5 +1,5 @@
 <?php
-//    Copyright 2021 Jared Hendrickson
+//    Copyright 2022 Jared Hendrickson
 //
 //   Licensed under the Apache License, Version 2.0 (the "License");
 //   you may not use this file except in compliance with the License.
@@ -14,10 +14,15 @@
 //   limitations under the License.
 
 # Imports and inits
-$pgtitle = array(gettext("System"), gettext("SAML2"));
 require_once("guiconfig.inc");
 require_once("saml2_auth/SAML2Auth.inc");
+
+# Initialize the pfSense UI page (note: $pgtitle must be defined before including head.inc)
+$pgtitle = array(gettext("System"), gettext("SAML2"), gettext("Settings"));
 include('head.inc');
+$update_tab = (SAML2Auth::is_update_available()) ? "Update (New Release Available)" : "Update";
+$tab_array = [[gettext("Settings"), true, "/saml2_auth/"], [gettext("$update_tab"), false, "/saml2_auth/update/"]];
+display_top_tabs($tab_array, true);    # Ensures the tabs are written to the top of page
 global $config;
 
 # Variables
@@ -29,6 +34,7 @@ $advanced_section = new Form_Section('Advanced Settings');
 
 $pkg_id = SAML2Auth::get_package_config()[0];
 $pkg_conf = SAML2Auth::get_package_config()[1];
+$input_errors = [];
 
 if ($_POST["save"]) {
     # Validate the enable value
@@ -78,7 +84,7 @@ if ($_POST["save"]) {
 
     # Validate the idp_x509_cert value
     if (isset($_POST["idp_x509_cert"])) {
-        $pkg_conf["idp_x509_cert"] = base64_encode($_POST["idp_x509_cert"]);
+            $pkg_conf["idp_x509_cert"] = base64_encode($_POST["idp_x509_cert"]);
     }
 
     # Validate the sp_base_url value
@@ -88,14 +94,27 @@ if ($_POST["save"]) {
 
     # Validate the custom_conf value
     if (isset($_POST["custom_conf"])) {
-        $pkg_conf["custom_conf"] = base64_encode($_POST["custom_conf"]);
+        # Ensure custom configuration is valid JSON or empty string
+        if ($_POST["custom_conf"] === "" or !is_null(json_decode($_POST["custom_conf"], true))) {
+            $pkg_conf["custom_conf"] = base64_encode($_POST["custom_conf"]);
+        }
+        else {
+            $input_errors[] = "Custom configuration must be valid JSON string.";
+        }
     }
 
-    # Write the configuration changes
-    $config["installedpackages"]["package"][$pkg_id]["conf"] = $pkg_conf;
-    write_config(sprintf(gettext(" Modified SAML2 settings")));
-    shell_exec("pfsense-saml2 backup");
-    print_apply_result_box(0);
+    # Only write configuration changes if there were no validation errors
+    if (empty($input_errors)) {
+        # Write the configuration changes
+        $config["installedpackages"]["package"][$pkg_id]["conf"] = $pkg_conf;
+        write_config(sprintf(gettext(" Modified SAML2 settings")));
+        shell_exec("pfsense-saml2 backup");
+        print_apply_result_box(0);
+    }
+    else {
+        print_input_errors($input_errors);
+    }
+
 }
 
 # When the SP base URL is blank, default the values to the webConfigurators URL
@@ -125,7 +144,7 @@ $general_section->addInput(new Form_Checkbox(
     '',
     $pkg_conf["strip_username"]
 ))->setHelp(
-    "Enable removal any characters after the @ character on email usernames. This is required if you intend to use SAML
+    "Enable removal of any characters after the @ character on email usernames. This is required if you intend to use SAML
     authentication that maps to an existing local user and your IdP returns email addresses as the username by default."
 );
 
@@ -204,7 +223,7 @@ $advanced_section->addInput(new Form_Textarea(
     'Custom SAML2 configuration',
     base64_decode($pkg_conf["custom_conf"])
 ))->setHelp(
-    'Adds custom configuration for SAML2 logins. This allows you to add custom settings in JSON format for the
+    'Adds custom configuration for SAML2 logins. This allows you to add custom php-saml settings in JSON format for the
     <a href="https://github.com/onelogin/php-saml" target="_blank">OneLogin PHP-SAML</a> library to use. This option is
     unsupported. Use at your own risk.'
 );

@@ -2,66 +2,12 @@
 <?php
 require_once("saml2_auth/SAML2Auth.inc");
 
-# Fetches the current version of pfSense
-function pfsense_version($full=false) {
-    # Only display the full release name if requested, Otherwise only provide the major and minor.
-    return ($full) ? file_get_contents("/etc/version") : substr(file_get_contents("/etc/version"), 0, 3);
-}
-
-# Pulls our current pfSense SAML2 configuration and saves to a non-volatile location.
-function backup($path="/usr/local/share/pfSense-pkg-saml2-auth/backup.json") {
-    # Local variables
-    $config_data = SAML2Auth::get_package_config()[1];
-
-    # Print status message
-    echo "Backing up configuration...";
-
-    # Save a JSON file containing the data
-    file_put_contents($path, json_encode($config_data));
-    echo "done." . PHP_EOL;
-}
-
-# Restores the pfSense SAML2 configuration from a specified backup file
-function restore($path="/usr/local/share/pfSense-pkg-saml2-auth/backup.json") {
-    # Local variables
-    global $config;
-    $config_id = SAML2Auth::get_package_config()[0];
-    $config_json = file_get_contents($path);
-    $config_data = json_decode($config_json, true);
-
-    # Print status message
-    echo "Restoring configuration...";
-
-    # Save the backup configuration to the pfSense master configuration if found
-    if (file_exists($path)) {
-        $config["installedpackages"]["package"][$config_id]["conf"] = $config_data;
-        write_config("Restoring SAML2 configuration");
-        echo "done." . PHP_EOL;
-    }
-    else {
-        echo "no backup found.".PHP_EOL;
-    }
-}
-
-# Update to the latest version of the package
-function update() {
-    # Local variables
-    $url = "https://github.com/jaredhendrickson13/pfsense-saml2-auth/releases/latest/download/pfSense-".pfsense_version()."-pkg-saml2-auth.txz";
-
-    # Backup the package configuration before updating
-    backup();
-
-    # Remove the existing package and add the latest
-    echo shell_exec("pkg delete -y pfSense-pkg-saml2-auth");
-    echo shell_exec("pkg add ".$url);
-}
-
 # Display the current version of pfSense and pfSense-pkg-saml2-auth
 function version() {
     # Local variables
     $pkg_info = shell_exec("pkg info pfSense-pkg-saml2-auth").PHP_EOL;
     $pkg_info = explode(PHP_EOL, $pkg_info);
-    $pf_ver_line = [str_replace(PHP_EOL, "", "pfSense Version: ".pfsense_version(true))];
+    $pf_ver_line = [str_replace(PHP_EOL, "", "pfSense Version: ".SAML2Auth::get_pfsense_version(true))];
     array_splice($pkg_info, 3, 0, $pf_ver_line);
 
     echo implode(PHP_EOL, $pkg_info);
@@ -81,19 +27,39 @@ function help() {
     echo "  help        : Displays the help page (this page)".PHP_EOL.PHP_EOL;
 }
 
-function runtime()
-{
+function runtime() {
+    # Variables
+    $saml2 = new SAML2Auth(true);
+
     # Run backup command if requested
     if ($_SERVER["argv"][1] === "backup") {
-        backup();
+        $saml2->backup_config(true);
     }
     # Run the restore command if requested
     elseif ($_SERVER["argv"][1] === "restore") {
-        restore();
+        $saml2->restore_config(true);
     }
     # Run the update command if requested
     elseif ($_SERVER["argv"][1] === "update") {
-        update();
+        # Local variables
+        $version = "latest";
+
+        # Update/revert to the requested version if present
+        if ($_SERVER["argv"][2]) {
+            # Add the starting 'v' if it is missing
+            if (substr($_SERVER["argv"][2], 0, 1) !== "v") {
+                $_SERVER["argv"][2] = "v".$_SERVER["argv"][2];
+            }
+
+            # Ensure version exists
+            if (array_key_exists($_SERVER["argv"][2], $saml2->get_all_pkg_versions())) {
+                $version = $_SERVER["argv"][2];
+            } else {
+                echo "Could not locate package version '".$_SERVER["argv"][2]."'.".PHP_EOL;
+                exit(1);
+            }
+        }
+        $saml2->update_pkg($version, true);
     }
     # Run the version command if requested
     elseif ($_SERVER["argv"][1] === "version") {
