@@ -175,7 +175,7 @@ class SAML2Auth {
     # Fetches the current version of pfSense
     public static function get_pfsense_version($full=false) {
         # Only display the full release name if requested, Otherwise only provide the major and minor.
-        return ($full) ? file_get_contents("/etc/version") : substr(file_get_contents("/etc/version"), 0, 3);
+        return ($full) ? str_replace(PHP_EOL, "", file_get_contents("/etc/version")) : substr(file_get_contents("/etc/version"), 0, 3);
     }
 
     public static function get_pkg_version() {
@@ -217,6 +217,20 @@ class SAML2Auth {
         $curr_ver_num = intval(str_replace(".", "", self::get_pkg_version()));
         $latest_ver_num = intval(str_replace(".", "", self::get_latest_pkg_version()));
         return $curr_ver_num < $latest_ver_num;
+    }
+
+    public static function is_pkg_supported() {
+        # Local variables
+        $overrides_dir = "/etc/inc/saml2_auth/overrides/";
+        $overrides = glob($overrides_dir."*" , GLOB_ONLYDIR);
+        $pf_version = self::get_pfsense_version(true);
+
+        # Check if this version of pfSense has a supported file override
+        if (in_array($overrides_dir.$pf_version, $overrides)) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     public static function get_pkg_releases() {

@@ -45,6 +45,12 @@ if ($_POST["confirm"] and !empty($_POST["version"])) {
 
 # Populate our update status form
 $update_status_section = new Form_Section('Update Status');
+$update_status_section->addInput(new Form_StaticText(
+    'Support Status',
+    (SAML2Auth::is_pkg_supported()) ? "<span style='color: green'>Verified</span>" : "<span style='color: red'>Unverified</span>"
+))->setHelp(
+    "Displays whether or not the package version currently installed fully supports ".$pf_ver."."
+);
 $update_status_section->addInput(new Form_StaticText('Current Version', $curr_ver.$curr_ver_msg));
 $update_status_section->addInput(new Form_StaticText(
     'Latest Version',
@@ -59,9 +65,9 @@ $update_settings_section->addInput(new Form_Select(
     $latest_ver,
     $all_vers
 ))->setHelp(
-    "Select the version you'd like to update or rollback to. Only releases supporting pfSense ".$pf_ver." are shown. Use 
-    caution when reverting to a previous version of the package as this can remove some features and/or introduce 
-    vulnerabilities that have since been patched in a later release."
+    "Select the version you'd like to update or rollback to. Only releases capable of installing on pfSense ".$pf_ver." 
+    are shown. Use caution when reverting to a previous version of the package as this can remove some features and/or 
+    introduce vulnerabilities that have since been patched in a later release."
 );
 
 
