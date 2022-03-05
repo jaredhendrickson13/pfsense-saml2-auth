@@ -41,6 +41,7 @@ Currently, the package fully supports the following pfSense versions including p
 <details>
     <summary>List of Supported pfSense Releases</summary>
 
+- pfSense 2.6.0-RELEASE
 - pfSense 2.5.2-RELEASE
 - pfSense 2.5.1-RELEASE
 - pfSense 2.5.0-RELEASE
