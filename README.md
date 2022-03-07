@@ -50,7 +50,10 @@ Currently, the package fully supports the following pfSense versions including p
 
 </details>
 
-Any version not listed is technically unsupported, but may still function. Proceed with caution.
+Any version not listed is technically unsupported, but may still function. This package cannot guarantee support for 
+manual or live patches that were not included in the pfSense release initially, as these patches can introduce code 
+conflicts to the package. Proceed with caution.
+
 
 ## Setup
 After installation, navigate to System > SAML2 to configure SAML authentication. You will need to obtain a few
