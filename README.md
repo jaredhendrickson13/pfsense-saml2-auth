@@ -1,4 +1,8 @@
 # pfSense SAML2 Authentication
+
+[![PHPlint](https://github.com/jaredhendrickson13/pfsense-saml2-auth/actions/workflows/phplint.yml/badge.svg)](https://github.com/jaredhendrickson13/pfsense-saml2-auth/actions/workflows/phplint.yml)
+[![Pylint](https://github.com/jaredhendrickson13/pfsense-saml2-auth/actions/workflows/pylint.yml/badge.svg)](https://github.com/jaredhendrickson13/pfsense-saml2-auth/actions/workflows/pylint.yml)
+
 `pfsense-saml2-auth` is a packaged SAML2 authentication extension for the pfSense webConfigurator. Currently, pfSense 
 only supports local, LDAP and RADIUS authentication and does not support any native multi-factor authentication (MFA). 
 At this time, there is unfortunately no roadmap for native SAML2 authentication or native MFA options on pfSense. With 
