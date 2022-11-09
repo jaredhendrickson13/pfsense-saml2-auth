@@ -23,13 +23,10 @@ require_once("config.inc");
 class SAML2Auth {
     public $auth;
     public $file_path;
-    private $config;
 
     # Constructs the saml2_auth object by loading SAML2 settings and creating the OneLogin_Saml2_Auth object
     public function __construct($no_auth=false) {
         session_start();
-        global $config;
-        $this->config = $config;
         $this->file_path = "/usr/local/share/pfSense-pkg-saml2-auth";
 
         # Only try to start authentication if the object wasn't requested without authentication
@@ -131,14 +128,10 @@ class SAML2Auth {
     }
 
     public static function get_package_config() {
-        global $config;
-        # Only proceed if there are installed packages. Prevents PHP warnings.
-        if (is_array($config["installedpackages"]["package"])) {
-            # Loop through each installed package until we find the saml2-auth package
-            foreach ($config["installedpackages"]["package"] as $id=>$pkg) {
-                if ($pkg["internal_name"] === "saml2-auth") {
-                    return [$id, $pkg["conf"]];
-                }
+        # Loop through each installed package until we find the saml2-auth package
+        foreach (config_get_path("installedpackages/package", []) as $id=>$pkg) {
+            if ($pkg["internal_name"] === "saml2-auth") {
+                return [$id, $pkg["conf"]];
             }
         }
     }
@@ -297,7 +290,6 @@ class SAML2Auth {
     # Restores the pfSense SAML2 configuration from a specified backup file
     public function restore_config($console=false) {
         # Local variables
-        global $config;
         $path = $this->file_path."/backup.json";
         $config_id = $this->get_package_config()[0];
         $config_json = file_get_contents($path);
@@ -308,7 +300,7 @@ class SAML2Auth {
 
         # Save the backup configuration to the pfSense master configuration if found
         if (file_exists($path)) {
-            $config["installedpackages"]["package"][$config_id]["conf"] = $config_data;
+            config_set_path("installedpackages/package/{$config_id}/conf", $config_data);
             write_config("Restoring SAML2 configuration");
             $this->__log("done." . PHP_EOL, $console);
             return true;

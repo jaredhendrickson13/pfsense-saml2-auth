@@ -23,7 +23,6 @@ include('head.inc');
 $update_tab = (SAML2Auth::is_update_available()) ? "Update (New Release Available)" : "Update";
 $tab_array = [[gettext("Settings"), true, "/saml2_auth/"], [gettext("$update_tab"), false, "/saml2_auth/update/"]];
 display_top_tabs($tab_array, true);    # Ensures the tabs are written to the top of page
-global $config;
 
 # Variables
 $form = new Form(false);
@@ -106,7 +105,7 @@ if ($_POST["save"]) {
     # Only write configuration changes if there were no validation errors
     if (empty($input_errors)) {
         # Write the configuration changes
-        $config["installedpackages"]["package"][$pkg_id]["conf"] = $pkg_conf;
+        config_set_path("installedpackages/package/{$pkg_id}/conf", $pkg_conf);
         write_config(sprintf(gettext(" Modified SAML2 settings")));
         shell_exec("pfsense-saml2 backup");
         print_apply_result_box(0);
@@ -119,13 +118,15 @@ if ($_POST["save"]) {
 
 # When the SP base URL is blank, default the values to the webConfigurators URL
 if (empty($pkg_conf["sp_base_url"])) {
-    $protocol = $config["system"]["webgui"]["protocol"];
-    $hostname = $config["system"]["hostname"].".".$config["system"]["domain"];
-    $port = (!empty($config["system"]["webgui"]["port"])) ? ":".$config["system"]["webgui"]["port"] : "";
+    $protocol = config_get_path("system/webgui/protocol");
+    $hostname = config_get_path("system/hostname");
+    $domain = config_get_path("system/domain");
+    $fqdn = "{$hostname}.{$domain}";
+    $port = config_get_path("system/webgui/port", "");
     $pkg_conf["sp_base_url"] = $protocol."://".$hostname.$port;
 
     # Write the configuration changes
-    $config["installedpackages"]["package"][$pkg_id]["conf"] = $pkg_conf;
+    config_set_path("installedpackages/package/{$pkg_id}/conf", $pkg_conf);
     write_config(sprintf(gettext(" Reverted SAML2 base URL")));
     shell_exec("pfsense-saml2 backup");
 }
