@@ -13,7 +13,7 @@
 //   See the License for the specific language governing permissions and
 //   limitations under the License.
 
-require_once("php-saml/_toolkit_loader.php");
+require_once("onelogin/php-saml/_toolkit_loader.php");
 require_once("config.inc");
 
 class SAML2Auth {
