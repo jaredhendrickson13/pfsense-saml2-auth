@@ -26,7 +26,6 @@ $tab_array = [[gettext("Settings"), false, "/saml2_auth/"], [gettext($update_tab
 display_top_tabs($tab_array, true);    # Ensure the tabs are written to the top of page
 
 # Variables
-global $config;
 $form = new Form(false);
 $pf_ver = SAML2Auth::get_pfsense_version(true);
 $curr_ver = SAML2Auth::get_pkg_version();

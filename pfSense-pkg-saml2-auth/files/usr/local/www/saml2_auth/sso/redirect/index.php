@@ -14,7 +14,7 @@
 //   limitations under the License.
 ?>
 <head>
-    <link rel="stylesheet" href="/css/saml2_auth.css" type="text/css">
+    <link rel="stylesheet" href="/css/saml2_auth/saml2_auth.css" type="text/css">
     <script src="/js/saml2_auth.js"></script>
 </head>
 
