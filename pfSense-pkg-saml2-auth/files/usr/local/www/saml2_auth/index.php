@@ -123,7 +123,12 @@ if (empty($pkg_conf["sp_base_url"])) {
     $domain = config_get_path("system/domain");
     $fqdn = "{$hostname}.{$domain}";
     $port = config_get_path("system/webgui/port", "");
-    $pkg_conf["sp_base_url"] = $protocol."://".$hostname.$port;
+    $pkg_conf["sp_base_url"] = "{$protocol}://{$fqdn}";
+
+    # Append the port if non-default
+    if ($port) {
+        $pkg_conf["sp_base_url"] = "{$pkg_conf['sp_base_url']}:{$port}";
+    }
 
     # Write the configuration changes
     config_set_path("installedpackages/package/{$pkg_id}/conf", $pkg_conf);
