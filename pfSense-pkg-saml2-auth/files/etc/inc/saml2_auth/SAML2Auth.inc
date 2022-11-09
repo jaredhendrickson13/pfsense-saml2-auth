@@ -13,6 +13,10 @@
 //   See the License for the specific language governing permissions and
 //   limitations under the License.
 
+require_once("robrichards/xmlseclibs/src/XMLSecurityKey.php");
+require_once("robrichards/xmlseclibs/src/XMLSecurityDSig.php");
+require_once("robrichards/xmlseclibs/src/XMLSecEnc.php");
+require_once("robrichards/xmlseclibs/src/Utils/XPath.php");
 require_once("onelogin/php-saml/_toolkit_loader.php");
 require_once("config.inc");
 
