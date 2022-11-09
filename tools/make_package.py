@@ -122,11 +122,11 @@ class MakePackage:
                 sys.exit(1)
 
         # Retrieve the built package
-        u=self.args.username
-        h=self.args.host
-        v=self.port_version
-        r="_" + self.port_revision if self.port_revision != "0" else ""
-        src = f"{u}@{h}:~/build/{REPO_NAME}/{PKG_NAME}/work/pkg/{PKG_NAME}-{v}{r}.pkg"
+        username=self.args.username
+        host=self.args.host
+        version=self.port_version
+        revision="_" + self.port_revision if self.port_revision != "0" else ""
+        src = f"{username}@{host}:~/build/{REPO_NAME}/{PKG_NAME}/work/pkg/{PKG_NAME}-{version}{revision}.pkg"
 
         self.run_scp_cmd(src, ".")
 
