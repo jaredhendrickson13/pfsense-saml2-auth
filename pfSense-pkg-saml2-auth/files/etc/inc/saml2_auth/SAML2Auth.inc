@@ -258,7 +258,7 @@ class SAML2Auth {
         foreach ($releases as $release) {
             # Loop through the assets of each release and check if our version of pfSense is supported
             foreach ($release["assets"] as $asset) {
-                if ($asset["name"] === "pfSense-".$pf_version."-pkg-saml2-auth.txz") {
+                if ($asset["name"] === "pfSense-".$pf_version."-pkg-saml2-auth.pkg") {
                     # The first item of our list is the latest release, mark it as such.
                     if ($count === 0) {
                         $versions[$release["tag_name"]] = $release["name"]." - Latest";
@@ -318,9 +318,9 @@ class SAML2Auth {
 
         # Format the package URL based on the requested version
         if ($version === "latest") {
-            $url = $base_url."/latest/download/pfSense-".$this->get_pfsense_version()."-pkg-saml2-auth.txz";
+            $url = $base_url."/latest/download/pfSense-".$this->get_pfsense_version()."-pkg-saml2-auth.pkg";
         } else {
-            $url = $base_url."/download/".$version."/pfSense-".$this->get_pfsense_version()."-pkg-saml2-auth.txz";
+            $url = $base_url."/download/".$version."/pfSense-".$this->get_pfsense_version()."-pkg-saml2-auth.pkg";
         }
 
         # Backup the package configuration before updating
