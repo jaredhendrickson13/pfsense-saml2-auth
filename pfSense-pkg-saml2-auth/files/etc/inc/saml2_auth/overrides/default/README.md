@@ -11,4 +11,4 @@ the default overrides. In the case that the default overrides break your pfSense
 to restore the overridden files to their original state.
 
 ## Default Override Version
-2.6.0-RELEASE
+2.7.0-RELEASE
