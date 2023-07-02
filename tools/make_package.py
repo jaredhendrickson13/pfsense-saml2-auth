@@ -1,5 +1,5 @@
 #!/usr/bin/python3
-# Copyright 2022 Jared Hendrickson
+# Copyright 2023 Jared Hendrickson
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -23,17 +23,13 @@ import subprocess
 import sys
 import jinja2
 
-# Constants
-PKG_NAME = "pfSense-pkg-saml2-auth"
-REPO_NAME = "pfsense-saml2-auth"
-
 
 class MakePackage:
     """Class that groups together variables and methods required to build the pfSense-pkg-saml2-auth FreeBSD package."""
     def __init__(self):
         self.__start_argparse__()
-        self.port_version = ".".join(self.args.tag.split(".")[0:2])
-        self.port_revision = self.args.tag.split(".")[2]
+        self.port_version = self.args.tag.split("_")[0]
+        self.port_revision = self.args.tag.split("_", maxsplit=1)[1]
 
         # Run tasks for build mode
         if self.args.host:
@@ -52,7 +48,7 @@ class MakePackage:
 
         # Set filepath and file variables
         root_dir = pathlib.Path(__file__).absolute().parent.parent
-        pkg_dir = root_dir.joinpath(PKG_NAME)
+        pkg_dir = root_dir.joinpath("pfSense-pkg-saml2-auth")
         template_dir = root_dir.joinpath("tools").joinpath("templates")
         files_dir = pkg_dir.joinpath("files")
         file_paths = {"dir": [], "file": [], "port_version": self.port_version, "port_revision": self.port_revision}
@@ -106,13 +102,13 @@ class MakePackage:
         # Automate the process to pull, install dependencies, build and retrieve the package on a remote host
         build_cmds = [
             "mkdir -p ~/build/",
-            f"rm -rf ~/build/{REPO_NAME}",
-            f"git clone https://github.com/jaredhendrickson13/{REPO_NAME}.git ~/build/{REPO_NAME}/",
-            f"git -C ~/build/{REPO_NAME} checkout " + self.args.branch,
-            f"composer install --working-dir ~/build/{REPO_NAME}",
-            f"rm -rf ~/build/{REPO_NAME}/vendor/composer && rm ~/build/{REPO_NAME}/vendor/autoload.php",
-            f"cp -r ~/build/{REPO_NAME}/vendor/* ~/build/{REPO_NAME}/{PKG_NAME}/files/etc/inc/",
-            f"python3 ~/build/{REPO_NAME}/tools/make_package.py --tag {self.args.tag}"
+            "rm -rf ~/build/pfsense-saml2-auth",
+            "git clone https://github.com/jaredhendrickson13/pfsense-saml2-auth.git ~/build/pfsense-saml2-auth/",
+            "git -C ~/build/pfsense-saml2-auth checkout " + self.args.branch,
+            "composer install --working-dir ~/build/pfsense-saml2-auth",
+            "rm -rf ~/build/pfsense-saml2-auth/vendor/composer && rm ~/build/pfsense-saml2-auth/vendor/autoload.php",
+            "cp -r ~/build/pfsense-saml2-auth/vendor/* ~/build/pfsense-saml2-auth/pfSense-pkg-saml2-auth/files/etc/inc/",
+            f"python3 ~/build/pfsense-saml2-auth/tools/make_package.py --tag {self.args.tag}"
         ]
 
         # Run each command and exit on bad status if failure
@@ -122,37 +118,25 @@ class MakePackage:
                 sys.exit(1)
 
         # Retrieve the built package
-        username=self.args.username
-        host=self.args.host
-        version=self.port_version
-        revision="_" + self.port_revision if self.port_revision != "0" else ""
-        src = f"{username}@{host}:~/build/{REPO_NAME}/{PKG_NAME}/work/pkg/{PKG_NAME}-{version}{revision}.pkg"
-
+        src = "{u}@{h}:~/build/pfsense-saml2-auth/pfSense-pkg-saml2-auth/work/pkg/pfSense-pkg-saml2-auth-{v}{r}.pkg"
+        src = src.format(
+            u=self.args.username,
+            h=self.args.host,
+            v=self.port_version,
+            r="_" + self.port_revision if self.port_revision != "0" else ""
+        )
         self.run_scp_cmd(src, ".")
 
     def __start_argparse__(self):
-        # Custom port type for argparse
+        # Custom tag type for argparse
         def tag(value_string):
-            value = str(value_string).split(".")
-            valid = True
-
-            # Require 3 items (M.m.p)
-            if len(value) == 3:
-                for i in value:
-                    # Value cannot be blank
-                    if i == "":
-                        valid = False
-            else:
-                valid = False
-
-            # Return value if valid, otherwise throw error
-            if valid:
+            if "." in value_string and "_" in value_string:
                 return value_string
 
             raise argparse.ArgumentTypeError(f"{value_string} is not a semantic version tag")
 
         parser = argparse.ArgumentParser(
-            description=f"Build the {PKG_NAME} on FreeBSD"
+            description="Build the pfSense SAML2 auth on FreeBSD"
         )
         parser.add_argument(
             '--host', '-i',
