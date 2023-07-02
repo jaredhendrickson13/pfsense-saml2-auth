@@ -19,7 +19,7 @@ Command will output the FreeBSD make command output. Outputs the following files
 
 - `pfsense-saml2-auth/pfSense-pkg-saml2-auth/Makefile` : The rendered Makefile
 - `pfsense-saml2-auth/pfSense-pkg-saml2-auth/pkg-plist`: The rendered pkg-plist
-- `pfsense-saml2-auth/pfSense-pkg-saml2-auth/pfSense-pkg-saml2-auth-<VERSION>.txz` : The FreeBSD package distribution file. On FreeBSD 11, 
+- `pfsense-saml2-auth/pfSense-pkg-saml2-auth/pfSense-pkg-saml2-auth-<VERSION>.pkg` : The FreeBSD package distribution file. On FreeBSD 11, 
 this should be located in the `pfsense-saml2-auth/pfSense-pkg-saml2-auth` directory after completion. On FreeBSD 12 it should be 
 located in the `pfsense-saml2-auth/pfSense-pkg-saml2-auth/work/pkg` directory.
 

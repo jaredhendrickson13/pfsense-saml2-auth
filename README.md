@@ -1,4 +1,8 @@
 # pfSense SAML2 Authentication
+
+[![PHPlint](https://github.com/jaredhendrickson13/pfsense-saml2-auth/actions/workflows/phplint.yml/badge.svg)](https://github.com/jaredhendrickson13/pfsense-saml2-auth/actions/workflows/phplint.yml)
+[![Pylint](https://github.com/jaredhendrickson13/pfsense-saml2-auth/actions/workflows/pylint.yml/badge.svg)](https://github.com/jaredhendrickson13/pfsense-saml2-auth/actions/workflows/pylint.yml)
+
 `pfsense-saml2-auth` is a packaged SAML2 authentication extension for the pfSense webConfigurator. Currently, pfSense 
 only supports local, LDAP and RADIUS authentication and does not support any native multi-factor authentication (MFA). 
 At this time, there is unfortunately no roadmap for native SAML2 authentication or native MFA options on pfSense. With 
@@ -6,7 +10,7 @@ At this time, there is unfortunately no roadmap for native SAML2 authentication 
 being officially announced, it is unlikely we will see enterprise level features like SAML2 implemented in pfSense CE
 anytime soon. This can create major headaches when dealing with security compliance standards such as PCI DSS that may 
 require MFA on firewall admin logins. `pfsense-saml2-auth` helps alleviate this problem by allowing you to integrate 
-single sign-on (SSO) with an identity provider such as Okta or OneLogin. In doing so, you will be able use the identity 
+single sign-on (SSO) with an identity provider such as Okta or OneLogin. In doing so, you will be able to use the identity 
 provider's built-in MFA for pfSense logins and greatly simplify user onboarding.<br><br>
 
 ![sso_login_example_img](docs/img/sso_login.png)
@@ -19,12 +23,12 @@ must be enabled in System > SAML2 for this option to appear.</sub><br>
 - Automatically maps groups returned within the SAML2 assertion to groups within pfSense to inherit existing privileges.
 No need to create local users before authenticating.
 - Retains pfSense's built-in authentication and change logs.
-- Adds the System > SAML2 settings page within the webConfigurator to make setup a breeze. 
+- Adds the System > SAML2 settings page within the webConfigurator to make set up a breeze. 
 
 ## Installation 
 To install, simply run the following command from the pfSense command line:<br>
 ```
-pkg add https://github.com/jaredhendrickson13/pfsense-saml2-auth/releases/latest/download/pfSense-2.5-pkg-saml2-auth.txz
+pkg add https://github.com/jaredhendrickson13/pfsense-saml2-auth/releases/latest/download/pfSense-2.7-pkg-saml2-auth.pkg
 ```
 
 To uninstall:<br>
@@ -41,18 +45,14 @@ Currently, the package fully supports the following pfSense versions including p
 <details>
     <summary>List of Supported pfSense Releases</summary>
 
-- pfSense 2.6.0-RELEASE
-- pfSense 2.5.2-RELEASE
-- pfSense 2.5.1-RELEASE
-- pfSense 2.5.0-RELEASE
-- pfSense 2.4.5-RELEASE
-- pfSense 2.4.4-RELEASE
+- pfSense 2.7.0-RELEASE
 
 </details>
 
-Any version not listed is technically unsupported, but may still function. This package cannot guarantee support for 
-manual or live patches that were not included in the pfSense release initially, as these patches can introduce code 
-conflicts to the package. Proceed with caution.
+Older versions of pfSense may still be supported by older versions of this package. Any other version not listed is 
+technically unsupported, but may still function. This package cannot guarantee support for manual or live patches that 
+were not included in the pfSense release initially, as these patches can introduce code conflicts to the package. 
+Proceed with caution.
 
 
 ## Setup
@@ -92,7 +92,7 @@ symbol.
 available for other pfSense services such as SSH, captive portal, OpenVPN, etc.
 
 ## Disclaimers
-- This project is in no way affiliated with the pfSense project or it's parent organization Netgate. Any use of the 
+- This project is in no way affiliated with the pfSense project, or it's parent organization Netgate. Any use of the 
 pfSense name is intended to relate the project to it's developed platform and in no way capitalizes on the 
 pfSense trademark. By using this software, you acknowledge that no entity can provide support or guarantee 
 functionality. 

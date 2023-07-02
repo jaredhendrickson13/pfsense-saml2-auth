@@ -13,19 +13,20 @@
 //   See the License for the specific language governing permissions and
 //   limitations under the License.
 
-require_once("saml2_auth/lib/php-saml-3.5.1/_toolkit_loader.php");
+require_once("robrichards/xmlseclibs/src/XMLSecurityKey.php");
+require_once("robrichards/xmlseclibs/src/XMLSecurityDSig.php");
+require_once("robrichards/xmlseclibs/src/XMLSecEnc.php");
+require_once("robrichards/xmlseclibs/src/Utils/XPath.php");
+require_once("onelogin/php-saml/_toolkit_loader.php");
 require_once("config.inc");
 
 class SAML2Auth {
     public $auth;
     public $file_path;
-    private $config;
 
     # Constructs the saml2_auth object by loading SAML2 settings and creating the OneLogin_Saml2_Auth object
     public function __construct($no_auth=false) {
         session_start();
-        global $config;
-        $this->config = $config;
         $this->file_path = "/usr/local/share/pfSense-pkg-saml2-auth";
 
         # Only try to start authentication if the object wasn't requested without authentication
@@ -127,14 +128,10 @@ class SAML2Auth {
     }
 
     public static function get_package_config() {
-        global $config;
-        # Only proceed if there are installed packages. Prevents PHP warnings.
-        if (is_array($config["installedpackages"]["package"])) {
-            # Loop through each installed package until we find the saml2-auth package
-            foreach ($config["installedpackages"]["package"] as $id=>$pkg) {
-                if ($pkg["internal_name"] === "saml2-auth") {
-                    return [$id, $pkg["conf"]];
-                }
+        # Loop through each installed package until we find the saml2-auth package
+        foreach (config_get_path("installedpackages/package", []) as $id=>$pkg) {
+            if ($pkg["internal_name"] === "saml2-auth") {
+                return [$id, $pkg["conf"]];
             }
         }
     }
@@ -261,7 +258,7 @@ class SAML2Auth {
         foreach ($releases as $release) {
             # Loop through the assets of each release and check if our version of pfSense is supported
             foreach ($release["assets"] as $asset) {
-                if ($asset["name"] === "pfSense-".$pf_version."-pkg-saml2-auth.txz") {
+                if ($asset["name"] === "pfSense-".$pf_version."-pkg-saml2-auth.pkg") {
                     # The first item of our list is the latest release, mark it as such.
                     if ($count === 0) {
                         $versions[$release["tag_name"]] = $release["name"]." - Latest";
@@ -293,7 +290,6 @@ class SAML2Auth {
     # Restores the pfSense SAML2 configuration from a specified backup file
     public function restore_config($console=false) {
         # Local variables
-        global $config;
         $path = $this->file_path."/backup.json";
         $config_id = $this->get_package_config()[0];
         $config_json = file_get_contents($path);
@@ -304,7 +300,7 @@ class SAML2Auth {
 
         # Save the backup configuration to the pfSense master configuration if found
         if (file_exists($path)) {
-            $config["installedpackages"]["package"][$config_id]["conf"] = $config_data;
+            config_set_path("installedpackages/package/{$config_id}/conf", $config_data);
             write_config("Restoring SAML2 configuration");
             $this->__log("done." . PHP_EOL, $console);
             return true;
@@ -322,9 +318,9 @@ class SAML2Auth {
 
         # Format the package URL based on the requested version
         if ($version === "latest") {
-            $url = $base_url."/latest/download/pfSense-".$this->get_pfsense_version()."-pkg-saml2-auth.txz";
+            $url = $base_url."/latest/download/pfSense-".$this->get_pfsense_version()."-pkg-saml2-auth.pkg";
         } else {
-            $url = $base_url."/download/".$version."/pfSense-".$this->get_pfsense_version()."-pkg-saml2-auth.txz";
+            $url = $base_url."/download/".$version."/pfSense-".$this->get_pfsense_version()."-pkg-saml2-auth.pkg";
         }
 
         # Backup the package configuration before updating
