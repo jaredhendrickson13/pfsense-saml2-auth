@@ -177,7 +177,7 @@ class SAML2Auth {
 
     public static function get_pkg_version() {
         # Pull the raw pkg info for the SAML2 auth package into an array for each line
-        $pkg_info = explode(PHP_EOL, shell_exec("pkg info pfSense-pkg-saml2-auth"));
+        $pkg_info = explode(PHP_EOL, shell_exec("pkg-static info pfSense-pkg-saml2-auth"));
 
         # Loop through each line and check the version
         foreach ($pkg_info as $pkg_line) {
@@ -211,9 +211,7 @@ class SAML2Auth {
 
     public static function is_update_available() {
         # Check if the current version is less than the latest version
-        $curr_ver_num = intval(str_replace(".", "", self::get_pkg_version()));
-        $latest_ver_num = intval(str_replace(".", "", self::get_latest_pkg_version()));
-        return $curr_ver_num < $latest_ver_num;
+        return version_compare(self::get_pkg_version(), self::get_latest_pkg_version(), operator: "<");
     }
 
     public static function is_pkg_supported() {
@@ -327,8 +325,8 @@ class SAML2Auth {
         $this->backup_config();
 
         # Remove the existing package and add the new one, then og the results
-        exec("pkg delete -y pfSense-pkg-saml2-auth", $del_cmd_out, $del_cmd_rc);
-        exec("pkg add ".$url, $add_cmd_out, $add_cmd_rc);
+        exec("pkg-static delete -y pfSense-pkg-saml2-auth", $del_cmd_out, $del_cmd_rc);
+        exec("pkg-static add ".escapeshellarg($url), $add_cmd_out, $add_cmd_rc);
         $this->__log(implode("\n", $del_cmd_out), $console);
         $this->__log(implode("\n", $add_cmd_out), $console);
 
@@ -339,6 +337,4 @@ class SAML2Auth {
             return false;
         }
     }
-
-
 }
