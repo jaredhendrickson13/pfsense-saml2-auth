@@ -24,9 +24,6 @@ import sys
 import jinja2
 
 
-# Constants
-PKG_NAME = "pfSense-pkg-saml2-auth"
-
 class MakePackage:
     """Class that groups together variables and methods required to build the pfSense-pkg-saml2-auth FreeBSD package."""
     def __init__(self):
@@ -51,7 +48,7 @@ class MakePackage:
 
         # Set filepath and file variables
         root_dir = pathlib.Path(__file__).absolute().parent.parent
-        pkg_dir = root_dir.joinpath(f"{PKG_NAME}")
+        pkg_dir = root_dir.joinpath("pfSense-pkg-saml2-auth")
         template_dir = root_dir.joinpath("tools").joinpath("templates")
         files_dir = pkg_dir.joinpath("files")
         file_paths = {"dir": [], "file": [], "port_version": self.port_version, "port_revision": self.port_revision}
@@ -110,7 +107,7 @@ class MakePackage:
             "git -C ~/build/pfsense-saml2-auth checkout " + self.args.branch,
             "composer install --working-dir ~/build/pfsense-saml2-auth",
             "rm -rf ~/build/pfsense-saml2-auth/vendor/composer && rm ~/build/pfsense-saml2-auth/vendor/autoload.php",
-            f"cp -r ~/build/pfsense-saml2-auth/vendor/* ~/build/pfsense-saml2-auth/{PKG_NAME}/files/etc/inc/",
+            "cp -r ~/build/pfsense-saml2-auth/vendor/* ~/build/pfsense-saml2-auth/pfSense-pkg-saml2-auth/files/etc/inc/",
             f"python3 ~/build/pfsense-saml2-auth/tools/make_package.py --tag {self.args.tag}"
         ]
 
@@ -121,26 +118,33 @@ class MakePackage:
                 sys.exit(1)
 
         # Retrieve the built package
-        src = "{u}@{h}:~/build/pfsense-saml2-auth/{n}/work/pkg/{n}-{v}{r}.pkg"
+        src = "{u}@{h}:~/build/pfsense-saml2-auth/pfSense-pkg-saml2-auth/work/pkg/pfSense-pkg-saml2-auth-{v}{r}.pkg"
         src = src.format(
             u=self.args.username,
             h=self.args.host,
             v=self.port_version,
-            n=PKG_NAME,
             r="_" + self.port_revision if self.port_revision != "0" else ""
         )
-        self.run_scp_cmd(src, ".")
+        self.run_scp_cmd(src, f"{self.args.filename}")
 
     def __start_argparse__(self):
         # Custom tag type for argparse
         def tag(value_string):
-            if "." in value_string and "_" in value_string:
-                return value_string
+            if "." not in value_string:
+                raise ValueError(f"{value_string} is not a semantic version tag")
 
-            raise argparse.ArgumentTypeError(f"{value_string} is not a semantic version tag")
+            # Remove the leading 'v' if present
+            if value_string.startswith("v"):
+                value_string = value_string[1:]
+
+            # Convert the patch section to be prefixed with _ if it is prefixed with .
+            if len(value_string.split(".")) == 3:
+                value_string = value_string[::-1].replace(".", "_", 1)[::-1]
+
+            return value_string
 
         parser = argparse.ArgumentParser(
-            description="Build the pfSense SAML2 auth on FreeBSD"
+            description="Build the pfSense SAML2 Auth package on FreeBSD"
         )
         parser.add_argument(
             '--host', '-i',
@@ -169,6 +173,14 @@ class MakePackage:
             type=tag,
             required=True,
             help="The version tag to use when building."
+        )
+        parser.add_argument(
+            '--filename', '-f',
+            dest="filename",
+            type=str,
+            default=".",
+            required=False,
+            help="The filename to use for the package file."
         )
         self.args = parser.parse_args()
 
