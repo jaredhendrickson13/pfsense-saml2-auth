@@ -211,9 +211,7 @@ class SAML2Auth {
 
     public static function is_update_available() {
         # Check if the current version is less than the latest version
-        $curr_ver_num = intval(str_replace(".", "", self::get_pkg_version()));
-        $latest_ver_num = intval(str_replace(".", "", self::get_latest_pkg_version()));
-        return $curr_ver_num < $latest_ver_num;
+        return version_compare(self::get_pkg_version(), self::get_latest_pkg_version(), operator: "<");
     }
 
     public static function is_pkg_supported() {
@@ -339,6 +337,4 @@ class SAML2Auth {
             return false;
         }
     }
-
-
 }
