@@ -23,6 +23,9 @@ import subprocess
 import sys
 import jinja2
 
+REPO_OWNER = "jaredhendrickson13"
+REPO_NAME = "pfsense-saml2-auth"
+
 
 class MakePackage:
     """Class that groups together variables and methods required to build the pfSense-pkg-saml2-auth FreeBSD package."""
@@ -102,13 +105,13 @@ class MakePackage:
         # Automate the process to pull, install dependencies, build and retrieve the package on a remote host
         build_cmds = [
             "mkdir -p ~/build/",
-            "rm -rf ~/build/pfsense-saml2-auth",
-            "git clone https://github.com/jaredhendrickson13/pfsense-saml2-auth.git ~/build/pfsense-saml2-auth/",
-            "git -C ~/build/pfsense-saml2-auth checkout " + self.args.branch,
-            "composer install --working-dir ~/build/pfsense-saml2-auth",
-            "rm -rf ~/build/pfsense-saml2-auth/vendor/composer && rm ~/build/pfsense-saml2-auth/vendor/autoload.php",
-            "cp -r ~/build/pfsense-saml2-auth/vendor/* ~/build/pfsense-saml2-auth/pfSense-pkg-saml2-auth/files/etc/inc/",
-            f"python3 ~/build/pfsense-saml2-auth/tools/make_package.py --tag {self.args.tag}"
+            f"rm -rf ~/build/{REPO_NAME}",
+            f"git clone https://github.com/{REPO_OWNER}/{REPO_NAME}.git ~/build/{REPO_NAME}/",
+            f"git -C ~/build/{REPO_NAME} checkout " + self.args.branch,
+            f"composer install --working-dir ~/build/{REPO_NAME}",
+            f"rm -rf ~/build/{REPO_NAME}/vendor/composer && rm ~/build/{REPO_NAME}/vendor/autoload.php",
+            f"cp -r ~/build/{REPO_NAME}/vendor/* ~/build/{REPO_NAME}/pfSense-pkg-saml2-auth/files/etc/inc/",
+            f"python3 ~/build/{REPO_NAME}/tools/make_package.py --tag {self.args.tag}"
         ]
 
         # Run each command and exit on bad status if failure
@@ -118,9 +121,10 @@ class MakePackage:
                 sys.exit(1)
 
         # Retrieve the built package
-        src = "{u}@{h}:~/build/pfsense-saml2-auth/pfSense-pkg-saml2-auth/work/pkg/pfSense-pkg-saml2-auth-{v}{r}.pkg"
+        src = "{u}@{h}:~/build/{rn}/pfSense-pkg-saml2-auth/work/pkg/pfSense-pkg-saml2-auth-{v}{r}.pkg"
         src = src.format(
             u=self.args.username,
+            rn=REPO_NAME,
             h=self.args.host,
             v=self.port_version,
             r="_" + self.port_revision if self.port_revision != "0" else ""
