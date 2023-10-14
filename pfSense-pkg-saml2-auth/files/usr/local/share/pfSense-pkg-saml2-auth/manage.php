@@ -5,7 +5,7 @@ require_once("saml2_auth/SAML2Auth.inc");
 # Display the current version of pfSense and pfSense-pkg-saml2-auth
 function version() {
     # Local variables
-    $pkg_info = shell_exec("pkg info pfSense-pkg-saml2-auth").PHP_EOL;
+    $pkg_info = shell_exec("pkg-static info pfSense-pkg-saml2-auth").PHP_EOL;
     $pkg_info = explode(PHP_EOL, $pkg_info);
     $pf_ver_line = [str_replace(PHP_EOL, "", "pfSense Version: ".SAML2Auth::get_pfsense_version(true))];
     array_splice($pkg_info, 3, 0, $pf_ver_line);
