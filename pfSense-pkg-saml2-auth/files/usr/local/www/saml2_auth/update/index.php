@@ -38,7 +38,7 @@ $curr_ver_msg = (SAML2Auth::is_update_available()) ? " - Update available" : " -
 # On POST, start the update process
 if ($_POST["confirm"] and !empty($_POST["version"])) {
     # Start the update process in the background and print notice
-    shell_exec("nohup pfsense-saml2 update ".$_POST["version"]." > /dev/null &");
+    shell_exec("nohup pfsense-saml2 update ".escapeshellarg($_POST["version"])." > /dev/null &");
     print_apply_result_box(0, "\nSAML2 package update process has started and is running in the background. Check back in a few minutes.");
 }
 
