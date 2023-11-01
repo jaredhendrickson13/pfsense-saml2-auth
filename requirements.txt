@@ -1,2 +1,2 @@
 Jinja2~=3.1.2
-pylint~=3.0.1
+pylint~=3.0.2
