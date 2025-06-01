@@ -239,7 +239,7 @@ $form->add($general_section);
 $form->add($idp_section);
 $form->add($sp_section);
 $form->add($advanced_section);
-$form->addGlobal(new Form_Button('save', 'Save', null, 'fa-save'))->addClass('btn-primary');
+$form->addGlobal(new Form_Button('save', 'Save', null, 'fa-solid fa-save'))->addClass('btn-primary');
 
 # PRINT OUR FORM AND PFSENSE FOOTER
 print $form;
