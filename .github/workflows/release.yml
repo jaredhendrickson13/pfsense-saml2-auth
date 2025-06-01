@@ -16,6 +16,8 @@ jobs:
         include:
           - freebsd_version: FreeBSD-14.0-CURRENT
             pfsense_version: 2.7
+          - freebsd_version: FreeBSD-15.0-CURRENT
+            pfsense_version: 2.8
 
     steps:
       - uses: actions/checkout@v4

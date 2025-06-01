@@ -1,7 +1,9 @@
 # pfSense SAML2 Authentication
 
-[![PHPlint](https://github.com/jaredhendrickson13/pfsense-saml2-auth/actions/workflows/phplint.yml/badge.svg)](https://github.com/jaredhendrickson13/pfsense-saml2-auth/actions/workflows/phplint.yml)
-[![Pylint](https://github.com/jaredhendrickson13/pfsense-saml2-auth/actions/workflows/pylint.yml/badge.svg)](https://github.com/jaredhendrickson13/pfsense-saml2-auth/actions/workflows/pylint.yml)
+[![Quality](https://github.com/jaredhendrickson13/pfsense-saml2-auth/actions/workflows/quality.yml/badge.svg)](https://github.com/jaredhendrickson13/pfsense-saml2-auth/actions/workflows/quality.yml)
+[![Build](https://github.com/jaredhendrickson13/pfsense-saml2-auth/actions/workflows/build.yml/badge.svg)](https://github.com/jaredhendrickson13/pfsense-saml2-auth/actions/workflows/build.yml)
+[![Release](https://github.com/jaredhendrickson13/pfsense-saml2-auth/actions/workflows/release.yml/badge.svg)](https://github.com/jaredhendrickson13/pfsense-saml2-auth/actions/workflows/release.yml)
+
 
 `pfsense-saml2-auth` is a packaged SAML2 authentication extension for the pfSense webConfigurator. Currently, pfSense 
 only supports local, LDAP and RADIUS authentication and does not support any native multi-factor authentication (MFA). 
@@ -45,7 +47,11 @@ Currently, the package fully supports the following pfSense versions including p
 <details>
     <summary>List of Supported pfSense Releases</summary>
 
+- pfSense 2.8.0-RELEASE
+- pfSense 2.7.2-RELEASE
+- pfSense 2.7.1-RELEASE
 - pfSense 2.7.0-RELEASE
+
 
 </details>
 
