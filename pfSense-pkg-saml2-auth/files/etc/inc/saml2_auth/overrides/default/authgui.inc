@@ -358,7 +358,7 @@ function display_login_form() {
                         $pkg_conf = SAML2Auth::get_package_config()[1];
 
                         # Only display the SSO login link if SAML2 auth is enabled
-                        if (isset($pkg_conf["enable"])) {
+                        if ($pkg_conf["enable"] === "yes") {
                             echo '<link rel="stylesheet" href="/css/saml2_auth/saml2_auth.css" type="text/css">';
                             echo '<a id="saml2_login_button" href="/saml2_auth/sso/"><p>Login with SSO</p></a>';
                         }
