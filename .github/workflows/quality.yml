@@ -1,13 +1,22 @@
-name: Pylint
-
+name: Quality
 on: [push]
 
 jobs:
-  lint:
+  check_phplint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Lint on PHP 8.2
+        uses: firehed/lint-php-action@v1
+        with:
+          file-extensions: 'php, inc'
+          php-version: "8.2"
+
+  check_pylint:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: ["3.10"]
+        python-version: [ "3.11" ]
     steps:
       - uses: actions/checkout@v4
       - name: Set up Python ${{ matrix.python-version }}
